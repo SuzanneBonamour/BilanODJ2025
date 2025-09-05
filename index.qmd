@@ -1,27 +1,102 @@
 ---
-title: "BilanODJ2025_comparaisonStocShoc"
+title: "Bilan ODJ 2025 : comparaison STOC & SHOC"
 format: html
 editor: visual
 ---
 
-## Quarto
-Test test test 
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
 ```{r}
-1 + 1
+library(readr)
 ```
 
-You can add options to executable code like this
+## Contenu
+
+Tendances ODJ et comparaison avec les observatoires STOC et SHOC
+
+## Description du projet ODJ-STOC-SHOC
+
+Décrire projet Marion, pourquoi nous nous posons ces questions, pourquoi c’est intéressant ?
+
+2 suivis d’oiseaux depuis plus de 10 ans au national. Il faut s‘intéresser aux tendances calculées, ce qui fait émerger plusieurs questionnements. Qu’est-ce qu’on échantillonne, est ce que ce sont les mêmes populations ? Bien mettre en avant que ce ne sont pas les mêmes milieux.
+
+Mise en avant des spécificités ODJ
+
+Spécificités négatives et positives – bcp de données, milieu privé sans accès…
+
+Dire que c’est une étude préliminaire (bien insister sur ce point) on utilise les mêmes types d’analyses que le bilan des oiseaux communs (STOC).
+
+On a comparé les estimations sur les mêmes périodes avec les analyses statistiques (2014 2024).
+
+## Données 
 
 ```{r}
-#| echo: false
-2 * 2
+Comparaison_ODJ_STOC <- read_delim("C:/Users/Suzanne.Bonamour/OneDrive - LPO/2) Data/7) ODJ bilan/1) Analyses/1) data/longTermTrends-Comparaison-ODJ-STOC.csv", 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
+library(readr)
+
+Comparaison_ODJ_SHOC <- read_delim("C:/Users/Suzanne.Bonamour/OneDrive - LPO/2) Data/7) ODJ bilan/1) Analyses/1) data/longTermTrends-Comparaison-ODJ-SHOC.csv", 
+    delim = ";", escape_double = FALSE, trim_ws = TRUE)
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## Listes des espèces comparables 
+
+Mettre en avant le nombre d’esp pour lesquelles on peut faire des comparaison (pas de tendance incertaines)
+
+## Comparaison ODJ - STOC/SHOC
+
+Expliquer qu’il y a tant d’espèces avec des patterns différents et tant d’esp pour lesquelles on peut faire des comparaisons.
+
+### Camembert comparaison printemps ODJ - STOC
+
+**Figure à l’appui** : camembert hiver/été avec tendances opposées et similaires (dans similaire mettre les tendances identiques et les tendances différentes ie stable versus déclin ou augmentation – ne pas expliquer cela au grand public).
+
+### Camembert comparaison hier ODJ - SHOC
+
+**Figure à l’appui** : camembert hiver/été avec tendances opposées et similaires (dans similaire mettre les tendances identiques et les tendances différentes ie stable versus déclin ou augmentation – ne pas expliquer cela au grand public).
+
+### Histogramme nombre d'espèces déclin/augmentation/stable
+
+Peut-être compléter avec un histogramme permettant de voir le nombre d’esp en déclin et le nombre en augmentation. Cela permettra de mettre en avant le fait que l’ODJ a un intérêt et permet de mettre en avant des choses. **Ne faire ces analyses que sur les espèces principales de l’ODJ celles directement ciblées pour lesquelles on a le plus de données**
+
+## Interprétation des résultats 
+
+Bien préciser que cela ouvre de nouvelles pistes d’analyse et de suivi. On illustre cela avec quelques exemples (texte)
+
+Bien mettre en avant que le pourcentage d’opposé est plus faible que le similaire (texte)
+
+## Exemple d'espèce à mettre en avant
+
+Pour chaque espèce mettre graphique de tendance commun ODJ et STOC/SHOC, une photo, un texte avec divers éléments sur l’espèce (écologie, conseils, explication tendance…)
+
+Graphique : une ligne par suivi, avec la pente estimée pour chaque suivi, et des couleurs différentes par suivi, en plein quand sign, en pointillé quand non sign/stable
+
+Se baser sur les sorties graphiques produites par Gwen
+
+ATTENTION : penser à bien revérifier les tendances du STOC et SHOC qui seront publiées dans le rapport qui sortira à l’automne
+
+### Verdier d’Europe
+
+bon exemple. Tendance similaire pour les 2 suivis
+
+### Sittelle torchepot
+
+différence pour hiver avec explications
+
+### Grosbec casse noyaux 
+
+tendances opposées
+
+### Rougegorge
+
+tendances similaires été et hiver
+
+### Mésange bleue
+
+tendances similaires
+
+### Pinson des arbres 
+
+tendances similaires
+
+```{r}
+1
+```
