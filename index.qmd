@@ -11,6 +11,53 @@ library(tidyverse)
 library(DT)
 ```
 
+```{r}
+#| include: false
+################################################################################
+###GRAPHICAL CHARTER ODJ
+################################################################################
+
+library(extrafont)
+library(ggthemes)
+library(ggplot2)
+library(grid)
+#loadfonts(device = "win")
+
+
+####COLOR ODJ 
+
+ColW_Bleue<-"#4B6C8D"
+ColS_Vert<-"#72A603"
+GrisClair<-"#F2F2F2"
+GrisFoncé<-"#4F4F4F"
+
+colfunc <- colorRampPalette(c(ColW_Bleue, "#B4C6D9"))
+colfunc(45)
+
+###GRAPH SPEC
+
+dodgewidth <- position_dodge(width=0.9)
+
+theme_histo<-function (base_size = 12, color = "white", base_family = "Source Sans Pro", title_family = "Source Sans Pro") {
+  colorhex <- ggthemes::ggthemes_data$wsj$bg[color]
+  theme_foundation(base_size = base_size, base_family = base_family) + 
+    theme(line = element_line(linetype = 1, colour = "black"), rect = element_rect(fill = colorhex, linetype = 0, colour = NA), text = element_text(colour = "black"), title = element_text(family = title_family, size = rel(1)), axis.title.x=element_blank(),axis.title.y = element_text(family = title_family, size = rel(1),), axis.text =   element_text(face = "plain", size = rel(1)), axis.text.x = element_text(colour= NULL), axis.text.y = element_text(colour = NULL), axis.ticks = element_line(colour = NULL), axis.ticks.y = element_blank(), axis.ticks.x = element_line(colour = NULL), axis.line = element_line(), axis.line.y = element_blank(), legend.background = element_rect(), legend.position = "top", legend.direction = "horizontal", legend.box = "vertical", panel.grid = element_line(colour = NULL, linetype = 3), panel.grid.major = element_line(colour = GrisFoncé), panel.grid.major.x = element_blank(), panel.grid.minor = element_blank(), plot.title = element_text(hjust = 0, face = "bold"), plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect(),strip.text = element_text(hjust = 0.1, face = "bold",colour=GrisFoncé,size = rel(1)),plot.subtitle=element_text(hjust = 0, face = "bold",colour=GrisFoncé,size = rel(1)))
+}
+
+theme_trends<-function (base_size = 12, color = "white", base_family = "Source Sans Pro", title_family = "Source Sans Pro") {
+  colorhex <- ggthemes::ggthemes_data$wsj$bg[color]
+  theme_foundation(base_size = base_size, base_family = base_family) + 
+    theme(line = element_line(linetype = 1, colour = "black"), rect = element_rect(fill = colorhex, linetype = 0, colour = NA), text = element_text(colour = "black"), title = element_text(family = title_family, size = rel(1)), axis.title.x=element_blank(),axis.title.y = element_text(family = title_family, size = rel(1),), axis.text =   element_text(face = "plain", size = rel(1)), axis.text.x = element_text(colour= NULL), axis.text.y = element_text(colour = NULL), axis.ticks = element_line(colour = NULL), axis.ticks.y = element_blank(), axis.ticks.x = element_line(colour = NULL), axis.line = element_line(), axis.line.y = element_blank(), legend.background = element_rect(), legend.position = "top", legend.direction = "horizontal", legend.box = "vertical", panel.grid = element_line(colour = NULL, linetype = 3), panel.grid.major = element_line(colour = GrisFoncé), panel.grid.major.x = element_blank(), panel.grid.minor = element_blank(), plot.title = element_text(hjust = 0, face = "bold",margin=margin(0,0,15,0)), plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect(),plot.subtitle = element_text(hjust = 0, face = "bold",colour=GrisFoncé,size = rel(1)))
+}
+
+theme_bump<-function (base_size = 12, color = "white", base_family = "Source Sans Pro", title_family = "Source Sans Pro") {
+  colorhex <- ggthemes::ggthemes_data$wsj$bg[color]
+  theme_foundation(base_size = base_size, base_family = base_family) + 
+    theme(line = element_line(linetype = 1, colour = "black"), rect = element_rect(fill = colorhex, linetype = 0, colour = NA), text = element_text(colour = "black"), title = element_text(family = title_family, size = rel(1)), axis.title.x=element_blank(),axis.title.y = element_blank(), axis.text =   element_blank(), axis.text.x = element_text(colour= NULL,size = rel(1),face = "bold"), axis.text.y = element_blank(), axis.ticks = element_blank(), axis.ticks.y = element_blank(), axis.ticks.x = element_blank(), axis.line = element_blank(), axis.line.y = element_blank(), legend.background = element_rect(), legend.position = "top", legend.direction = "horizontal", legend.box = "vertical", panel.grid = element_line(colour = NULL, linetype = 3), panel.grid.major = element_blank(), panel.grid.major.x = element_blank(), panel.grid.minor = element_blank(), plot.title = element_text(hjust = 0, face = "bold"), plot.margin = unit(c(1, 1, 1, 1), "lines"), strip.background = element_rect(),strip.text = element_text(hjust = 0.1, face = "bold",colour=GrisFoncé,size = rel(1)))
+}
+
+```
+
 ## Contenu
 
 Tendances ODJ et comparaison avec les observatoires STOC et SHOC
@@ -179,7 +226,7 @@ nb_esp_tendance_ODJ_plot <- ggplot(comparaison_ODJ_STOC[comparaison_ODJ_STOC$ten
     y = "Nombre d'espèces",
     fill = "Observatoire"
   ) +
-  theme_minimal() ; nb_esp_tendance_ODJ_plot
+  theme_histo() ; nb_esp_tendance_ODJ_plot
 ```
 
 ### ODJ-STOC
@@ -195,7 +242,7 @@ nb_esp_tendance_ODJ_STOC_plot <- ggplot(comparaison_ODJ_STOC[comparaison_ODJ_STO
     y = "Nombre d'espèces",
     fill = "Observatoire"
   ) +
-  theme_minimal() ; nb_esp_tendance_ODJ_STOC_plot
+  theme_histo() ; nb_esp_tendance_ODJ_STOC_plot
 ```
 
 **Ne faire ces analyses que sur les espèces principales de l’ODJ celles directement ciblées pour lesquelles on a le plus de données**
@@ -213,7 +260,7 @@ nb_esp_tendance_ODJ_SHOC_plot <- ggplot(comparaison_ODJ_SHOC[comparaison_ODJ_SHO
     y = "Nombre d'espèces",
     fill = "Observatoire"
   ) +
-  theme_minimal() ; nb_esp_tendance_ODJ_SHOC_plot
+  theme_histo() ; nb_esp_tendance_ODJ_SHOC_plot
 ```
 
 **Ne faire ces analyses que sur les espèces principales de l’ODJ celles directement ciblées pour lesquelles on a le plus de données**
@@ -240,7 +287,46 @@ ATTENTION : penser à bien revérifier les tendances du STOC et SHOC qui seron
 
 ### !!! Verdier d’Europe
 
+#### ODJ-STOC
+
+```{r}
+#| echo: false
+
+verdier_dt <- comparaison_ODJ_STOC %>% 
+  filter(species == "Verdier d'Europe") %>% 
+  select(species, minYear, maxYear, estimate, pval, tendance_bilan)
+```
+
+```{r}
+#| echo: false
+
+verdier_info_ODJ_STOC <- data.frame(
+  slope = c(verdier_dt$estimate),          # pentes
+  intercept = c(0, 0),         # ordonnées à l'origine
+  line = c("ODJ", "STOC")  # étiquettes
+)
+
+verdier_ODJ_STOC_plot <- ggplot(verdier_info_ODJ_STOC, aes(color = line)) +
+  geom_abline(aes(slope = slope, intercept = intercept), 
+              size = 1, color = c("darkgrey", "darkgreen")) +
+  xlim(-1, 1) + ylim(-1, 1) + 
+  theme_trends(base_size=12, color=NA)+
+  labs(x = "Temps", y = "Effectif relatifs", color = "Lignes") +
+  theme(legend.position = "top") ; verdier_ODJ_STOC_plot
+
+```
+
 bon exemple. Tendance similaire pour les 2 suivis
+
+#### !!! ODJ-SHOC
+
+```{r}
+#| echo: false
+
+verdier_dt <- comparaison_ODJ_SHOC %>% 
+  filter(species == "Verdier d'Europe") %>% 
+  select(species, minYear, maxYear, estimate, pval, tendance_bilan)
+```
 
 ### !!! Sittelle torchepot
 
