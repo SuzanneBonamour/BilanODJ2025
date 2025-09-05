@@ -38,6 +38,55 @@ comparaison_ODJ_STOC <- read_delim("1) data/longTermTrends-Comparaison-ODJ-STOC.
 
 comparaison_ODJ_SHOC <- read_delim("1) data/longTermTrends-Comparaison-ODJ-SHOC.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
+
+# colonnes dans ODJ ou non
+
+comparaison_ODJ_STOC <- comparaison_ODJ_STOC %>% 
+  mutate(dans_ODJ = "oui")
+
+comparaison_ODJ_SHOC <- comparaison_ODJ_SHOC %>% 
+  mutate(dans_ODJ = "oui")
+
+# colonnes tendance_bilan
+
+comparaison_ODJ_STOC <- comparaison_ODJ_STOC %>% 
+  mutate(tendance_bilan = case_when(
+    trend %in% c("D\xe9clin mod\xe9r\xe9", "D\xe9clin fort", "D\xe9clin mod\xe9r\xe9 \xe0 fort", 
+                 "Déclin fort", "Déclin modéré", "Déclin modéré à fort") ~ "déclin",
+    trend %in% c("Augmentation forte", "Augmentation mod\xe9r\xe9e", 
+                 "Augmentation mod\xe9r\xe9e \xe0 forte", "Augmentation modérée", 
+                 "Augmentation modérée à forte") ~ "augmentation",
+    trend %in% c("Incertain") ~ "incertain",
+    trend %in% c("Stable") ~ "stable",
+    TRUE ~ "autre"
+  ))
+
+table(comparaison_ODJ_STOC$tendance_bilan)
+
+comparaison_ODJ_SHOC <- comparaison_ODJ_SHOC %>% 
+  mutate(tendance_bilan = case_when(
+    trend %in% c("D\xe9clin mod\xe9r\xe9", "D\xe9clin fort", "D\xe9clin mod\xe9r\xe9 \xe0 fort", 
+                 "Déclin fort", "Déclin modéré", "Déclin modéré à fort") ~ "déclin",
+    trend %in% c("Augmentation forte", "Augmentation mod\xe9r\xe9e", 
+                 "Augmentation mod\xe9r\xe9e \xe0 forte", "Augmentation modérée", 
+                 "Augmentation modérée à forte") ~ "augmentation",
+    trend %in% c("Incertain") ~ "incertain",
+    trend %in% c("Stable") ~ "stable",
+    TRUE ~ "autre"
+  ))
+
+table(comparaison_ODJ_SHOC$tendance_bilan)
+
+
+comparaison_ODJ_STOC$tendance_bilan <- factor(
+  comparaison_ODJ_STOC$tendance_bilan,
+  levels = c("déclin", "stable", "augmentation", "incertain", "autre")
+)
+
+comparaison_ODJ_SHOC$tendance_bilan <- factor(
+  comparaison_ODJ_SHOC$tendance_bilan,
+  levels = c("déclin", "stable", "augmentation", "incertain", "autre")
+)
 ```
 
 ## Listes des espèces comparables 
@@ -102,27 +151,82 @@ liste_esp_ODJ_SHOC_1 %>%
                                              c(10,25,50,"All"))))
 ```
 
-## !!! Comparaison ODJ - STOC/SHOC
+## !!! Comparaison des tendances
+
+### !!! ODJ-STOC
 
 Expliquer qu’il y a tant d’espèces avec des patterns différents et tant d’esp pour lesquelles on peut faire des comparaisons.
 
-### !!! Camembert comparaison printemps ODJ - STOC
+**Figure à l’appui** : camembert hiver/été avec tendances opposées et similaires (dans similaire mettre les tendances identiques et les tendances différentes ie stable versus déclin ou augmentation – ne pas expliquer cela au grand public).
+
+### !!! ODJ-SHOC
+
+Expliquer qu’il y a tant d’espèces avec des patterns différents et tant d’esp pour lesquelles on peut faire des comparaisons.
 
 **Figure à l’appui** : camembert hiver/été avec tendances opposées et similaires (dans similaire mettre les tendances identiques et les tendances différentes ie stable versus déclin ou augmentation – ne pas expliquer cela au grand public).
 
-### !!! Camembert comparaison hier ODJ - SHOC
+### !!! Nombre d'espèces déclin/augmentation/stable
 
-**Figure à l’appui** : camembert hiver/été avec tendances opposées et similaires (dans similaire mettre les tendances identiques et les tendances différentes ie stable versus déclin ou augmentation – ne pas expliquer cela au grand public).
+### ODJ-STOC
 
-### !!! Histogramme nombre d'espèces déclin/augmentation/stable
+```{r}
+#| echo: false
 
-Peut-être compléter avec un histogramme permettant de voir le nombre d’esp en déclin et le nombre en augmentation. Cela permettra de mettre en avant le fait que l’ODJ a un intérêt et permet de mettre en avant des choses. **Ne faire ces analyses que sur les espèces principales de l’ODJ celles directement ciblées pour lesquelles on a le plus de données**
+nb_esp_tendance_ODJ_plot <- ggplot(comparaison_ODJ_STOC[comparaison_ODJ_STOC$tendance_bilan!="incertain" & comparaison_ODJ_STOC$Protocole == "ODJ",], aes(x = tendance_bilan)) +
+  geom_bar(position = "dodge", fill = "darkgrey") +
+  labs(
+    x = "Tendance temporelle",
+    y = "Nombre d'espèces",
+    fill = "Observatoire"
+  ) +
+  theme_minimal() ; nb_esp_tendance_ODJ_plot
+```
+
+### ODJ-STOC
+
+```{r}
+#| echo: false
+
+nb_esp_tendance_ODJ_STOC_plot <- ggplot(comparaison_ODJ_STOC[comparaison_ODJ_STOC$tendance_bilan!="incertain",], aes(x = tendance_bilan, fill = Protocole)) +
+  geom_bar(position = "dodge") +
+  scale_fill_manual(values = c("ODJ" = "darkgrey", "STOC" = "darkgreen")) +
+  labs(
+    x = "Tendance temporelle",
+    y = "Nombre d'espèces",
+    fill = "Observatoire"
+  ) +
+  theme_minimal() ; nb_esp_tendance_ODJ_STOC_plot
+```
+
+**Ne faire ces analyses que sur les espèces principales de l’ODJ celles directement ciblées pour lesquelles on a le plus de données**
+
+### ODJ-SHOC
+
+```{r}
+#| echo: false
+
+nb_esp_tendance_ODJ_SHOC_plot <- ggplot(comparaison_ODJ_SHOC[comparaison_ODJ_SHOC$tendance_bilan!="incertain",], aes(x = tendance_bilan, fill = Protocole)) +
+  geom_bar(position = "dodge") +
+  scale_fill_manual(values = c("ODJ" = "darkgrey", "SHOC" = "darkblue")) +
+  labs(
+    x = "Tendance temporelle",
+    y = "Nombre d'espèces",
+    fill = "Observatoire"
+  ) +
+  theme_minimal() ; nb_esp_tendance_ODJ_SHOC_plot
+```
+
+**Ne faire ces analyses que sur les espèces principales de l’ODJ celles directement ciblées pour lesquelles on a le plus de données**
+
 
 ## !!! Interprétation des résultats 
 
 Bien préciser que cela ouvre de nouvelles pistes d’analyse et de suivi. On illustre cela avec quelques exemples (texte)
 
 Bien mettre en avant que le pourcentage d’opposé est plus faible que le similaire (texte)
+
+### !!! ODJ-STOC
+### !!! ODJ-SHOC
 
 ## !!! Exemple d'espèce à mettre en avant
 
