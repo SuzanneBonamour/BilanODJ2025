@@ -5,14 +5,17 @@ editor: visual
 ---
 
 ```{r}
+#| include: false
 library(readr)
+library(tidyverse)
+library(DT)
 ```
 
 ## Contenu
 
 Tendances ODJ et comparaison avec les observatoires STOC et SHOC
 
-## Description du projet ODJ-STOC-SHOC
+## !!! Description du projet ODJ-STOC-SHOC
 
 Décrire projet Marion, pourquoi nous nous posons ces questions, pourquoi c’est intéressant ?
 
@@ -29,11 +32,11 @@ On a comparé les estimations sur les mêmes périodes avec les analyses statist
 ## Données 
 
 ```{r}
-Comparaison_ODJ_STOC <- read_delim("C:/Users/Suzanne.Bonamour/OneDrive - LPO/2) Data/7) ODJ bilan/1) Analyses/1) data/longTermTrends-Comparaison-ODJ-STOC.csv", 
+#| include: false
+comparaison_ODJ_STOC <- read_delim("1) data/longTermTrends-Comparaison-ODJ-STOC.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
-library(readr)
 
-Comparaison_ODJ_SHOC <- read_delim("C:/Users/Suzanne.Bonamour/OneDrive - LPO/2) Data/7) ODJ bilan/1) Analyses/1) data/longTermTrends-Comparaison-ODJ-SHOC.csv", 
+comparaison_ODJ_SHOC <- read_delim("1) data/longTermTrends-Comparaison-ODJ-SHOC.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
 ```
 
@@ -41,29 +44,87 @@ Comparaison_ODJ_SHOC <- read_delim("C:/Users/Suzanne.Bonamour/OneDrive - LPO/2) 
 
 Mettre en avant le nombre d’esp pour lesquelles on peut faire des comparaison (pas de tendance incertaines)
 
-## Comparaison ODJ - STOC/SHOC
+### ODJ-STOC
+
+```{r}
+#| include: false
+
+# ODJ-STOC
+
+liste_esp_ODJ_STOC_1 <- comparaison_ODJ_STOC %>% 
+  filter(Comparaison !="Incertain") %>% 
+  dplyr::select(species) %>% 
+  distinct()
+
+```
+
+Nombre d'espèce pour lesquelles il est possible de compararer les tendances temporelles entre les observatoires ODJ et STOC : `r length(liste_esp_ODJ_STOC_1$species)`
+
+Listes des espèces comparées :
+
+```{r echo=FALSE, message=FALSE}
+
+# Click table
+liste_esp_ODJ_STOC_1 %>%
+  datatable(extensions = 'Buttons',
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
+```
+
+### ODJ-SHOC
+
+```{r}
+#| include: false
+
+# ODJ-SHOC
+
+liste_esp_ODJ_SHOC_1 <- comparaison_ODJ_SHOC %>% 
+  filter(Comparaison !="Incertain") %>% 
+  dplyr::select(species) %>% 
+  distinct()
+
+```
+
+Nombre d'espèce pour lesquelles il est possible de compararer les tendances temporelles entre les observatoires ODJ et SHOC : `r length(liste_esp_ODJ_SHOC_1$species)`
+
+Listes des espèces comparées :
+
+```{r echo=FALSE, message=FALSE}
+
+# Click table
+liste_esp_ODJ_SHOC_1 %>%
+  datatable(extensions = 'Buttons',
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
+```
+
+## !!! Comparaison ODJ - STOC/SHOC
 
 Expliquer qu’il y a tant d’espèces avec des patterns différents et tant d’esp pour lesquelles on peut faire des comparaisons.
 
-### Camembert comparaison printemps ODJ - STOC
+### !!! Camembert comparaison printemps ODJ - STOC
 
 **Figure à l’appui** : camembert hiver/été avec tendances opposées et similaires (dans similaire mettre les tendances identiques et les tendances différentes ie stable versus déclin ou augmentation – ne pas expliquer cela au grand public).
 
-### Camembert comparaison hier ODJ - SHOC
+### !!! Camembert comparaison hier ODJ - SHOC
 
 **Figure à l’appui** : camembert hiver/été avec tendances opposées et similaires (dans similaire mettre les tendances identiques et les tendances différentes ie stable versus déclin ou augmentation – ne pas expliquer cela au grand public).
 
-### Histogramme nombre d'espèces déclin/augmentation/stable
+### !!! Histogramme nombre d'espèces déclin/augmentation/stable
 
 Peut-être compléter avec un histogramme permettant de voir le nombre d’esp en déclin et le nombre en augmentation. Cela permettra de mettre en avant le fait que l’ODJ a un intérêt et permet de mettre en avant des choses. **Ne faire ces analyses que sur les espèces principales de l’ODJ celles directement ciblées pour lesquelles on a le plus de données**
 
-## Interprétation des résultats 
+## !!! Interprétation des résultats 
 
 Bien préciser que cela ouvre de nouvelles pistes d’analyse et de suivi. On illustre cela avec quelques exemples (texte)
 
 Bien mettre en avant que le pourcentage d’opposé est plus faible que le similaire (texte)
 
-## Exemple d'espèce à mettre en avant
+## !!! Exemple d'espèce à mettre en avant
 
 Pour chaque espèce mettre graphique de tendance commun ODJ et STOC/SHOC, une photo, un texte avec divers éléments sur l’espèce (écologie, conseils, explication tendance…)
 
@@ -73,30 +134,26 @@ Se baser sur les sorties graphiques produites par Gwen
 
 ATTENTION : penser à bien revérifier les tendances du STOC et SHOC qui seront publiées dans le rapport qui sortira à l’automne
 
-### Verdier d’Europe
+### !!! Verdier d’Europe
 
 bon exemple. Tendance similaire pour les 2 suivis
 
-### Sittelle torchepot
+### !!! Sittelle torchepot
 
 différence pour hiver avec explications
 
-### Grosbec casse noyaux 
+### !!! Grosbec casse noyaux 
 
 tendances opposées
 
-### Rougegorge
+### !!! Rougegorge
 
 tendances similaires été et hiver
 
-### Mésange bleue
+### !!! Mésange bleue
 
 tendances similaires
 
-### Pinson des arbres 
+### !!! Pinson des arbres 
 
 tendances similaires
-
-```{r}
-1
-```
