@@ -212,12 +212,15 @@ Expliquer qu’il y a tant d’espèces avec des patterns différents et tant d�
 
 **Figure à l’appui** : camembert hiver/été avec tendances opposées et similaires (dans similaire mettre les tendances identiques et les tendances différentes ie stable versus déclin ou augmentation – ne pas expliquer cela au grand public).
 
-### !!! Nombre d'espèces déclin/augmentation/stable
+### Nombre d'espèces déclin/augmentation/stable
 
 ### ODJ-STOC
 
 ```{r}
 #| echo: false
+#| warning: false
+#| fig-height: 4
+#| fig-width: 8
 
 nb_esp_tendance_ODJ_plot <- ggplot(comparaison_ODJ_STOC[comparaison_ODJ_STOC$tendance_bilan!="incertain" & comparaison_ODJ_STOC$Protocole == "ODJ",], aes(x = tendance_bilan)) +
   geom_bar(position = "dodge", fill = "darkgrey") +
@@ -233,6 +236,9 @@ nb_esp_tendance_ODJ_plot <- ggplot(comparaison_ODJ_STOC[comparaison_ODJ_STOC$ten
 
 ```{r}
 #| echo: false
+#| warning: false
+#| fig-height: 4
+#| fig-width: 8
 
 nb_esp_tendance_ODJ_STOC_plot <- ggplot(comparaison_ODJ_STOC[comparaison_ODJ_STOC$tendance_bilan!="incertain",], aes(x = tendance_bilan, fill = Protocole)) +
   geom_bar(position = "dodge") +
@@ -251,7 +257,10 @@ nb_esp_tendance_ODJ_STOC_plot <- ggplot(comparaison_ODJ_STOC[comparaison_ODJ_STO
 
 ```{r}
 #| echo: false
-
+#| warning: false
+#| fig-height: 4
+#| fig-width: 8
+#| 
 nb_esp_tendance_ODJ_SHOC_plot <- ggplot(comparaison_ODJ_SHOC[comparaison_ODJ_SHOC$tendance_bilan!="incertain",], aes(x = tendance_bilan, fill = Protocole)) +
   geom_bar(position = "dodge") +
   scale_fill_manual(values = c("ODJ" = "darkgrey", "SHOC" = "darkblue")) +
@@ -285,52 +294,231 @@ Se baser sur les sorties graphiques produites par Gwen
 
 ATTENTION : penser à bien revérifier les tendances du STOC et SHOC qui seront publiées dans le rapport qui sortira à l’automne
 
-### !!! Verdier d’Europe
+### Verdier d’Europe
 
 #### ODJ-STOC
+
+Tendance similaire
 
 ```{r}
 #| echo: false
 
-verdier_dt <- comparaison_ODJ_STOC %>% 
+verdier_ODJ_STOC_dt <- comparaison_ODJ_STOC %>% 
   filter(species == "Verdier d'Europe") %>% 
-  select(species, minYear, maxYear, estimate, pval, tendance_bilan)
+  select(species, minYear, maxYear, estimate, pval, infIC, supIC, tendance_bilan)
+
 ```
 
 ```{r}
 #| echo: false
+#| warning: false
+#| fig-height: 4
+#| fig-width: 8
 
 verdier_info_ODJ_STOC <- data.frame(
-  slope = c(verdier_dt$estimate),          # pentes
-  intercept = c(0, 0),         # ordonnées à l'origine
-  line = c("ODJ", "STOC")  # étiquettes
+  slope = verdier_ODJ_STOC_dt$estimate,
+  intercept = - verdier_ODJ_STOC_dt$estimate * ((2012 + 2025) / 2),
+  infIC = verdier_ODJ_STOC_dt$infIC,
+  supIC = verdier_ODJ_STOC_dt$supIC,
+  line = c("ODJ", "STOC")
 )
 
-verdier_ODJ_STOC_plot <- ggplot(verdier_info_ODJ_STOC, aes(color = line)) +
-  geom_abline(aes(slope = slope, intercept = intercept), 
-              size = 1, color = c("darkgrey", "darkgreen")) +
-  xlim(-1, 1) + ylim(-1, 1) + 
-  theme_trends(base_size=12, color=NA)+
-  labs(x = "Temps", y = "Effectif relatifs", color = "Lignes") +
+verdier_info_ODJ_STOC_plot <- verdier_info_ODJ_STOC %>%
+  mutate(
+    slope_min = infIC, 
+    slope_max = supIC
+  ) %>%
+  tidyr::expand_grid(x = seq(2012, 2025, by = 0.1)) %>% 
+  mutate(
+    y_min = intercept + slope_min * x,
+    y_max = intercept + slope_max * x
+  )
+
+verdier_ODJ_STOC_plot <- ggplot(verdier_info_ODJ_STOC_plot, aes(color = line, fill = line)) +
+  geom_ribbon(aes(x = x, ymin = y_min, ymax = y_max, fill = line), alpha = 0.2, color = "white") +
+  geom_abline(aes(slope = slope, intercept = intercept, color = line), size = 2) +
+  theme_trends(base_size=12, color=NA) +
+  scale_color_manual(values = c("darkgrey", "darkgreen")) +
+  scale_fill_manual(values = c("darkgrey", "darkgreen")) + 
+  scale_x_continuous(limits = c(2012, 2025), breaks = 2012:2025) +
+  scale_y_continuous(limits = c(min(verdier_info_ODJ_STOC_plot$y_min), 
+                                max(verdier_info_ODJ_STOC_plot$y_max)), 
+                     breaks = seq(round(min(verdier_info_ODJ_STOC_plot$y_min)), 
+                                  round(max(verdier_info_ODJ_STOC_plot$y_max)), by = 15)) +
+  labs(x = "Année", y = "Effectifs relatifs", color = "Observatoire", fill = "Observatoire") +
   theme(legend.position = "top") ; verdier_ODJ_STOC_plot
 
 ```
 
-bon exemple. Tendance similaire pour les 2 suivis
+#### ODJ-SHOC
 
-#### !!! ODJ-SHOC
+Tendance similaire
+
 
 ```{r}
 #| echo: false
 
-verdier_dt <- comparaison_ODJ_SHOC %>% 
+verdier_ODJ_SHOC_dt <- comparaison_ODJ_SHOC %>% 
   filter(species == "Verdier d'Europe") %>% 
-  select(species, minYear, maxYear, estimate, pval, tendance_bilan)
+  select(species, minYear, maxYear, estimate, pval, infIC, supIC, tendance_bilan)
+
 ```
+
+```{r}
+#| echo: false
+#| warning: false
+#| fig-height: 4
+#| fig-width: 8
+
+verdier_info_ODJ_SHOC <- data.frame(
+  slope = verdier_ODJ_SHOC_dt$estimate,
+  intercept = - verdier_ODJ_SHOC_dt$estimate * ((2012 + 2025) / 2),
+  infIC = verdier_ODJ_SHOC_dt$infIC,
+  supIC = verdier_ODJ_SHOC_dt$supIC,
+  line = c("ODJ", "SHOC")
+)
+
+verdier_info_ODJ_SHOC_plot <- verdier_info_ODJ_SHOC %>%
+  mutate(
+    slope_min = infIC, 
+    slope_max = supIC
+  ) %>%
+  tidyr::expand_grid(x = seq(2012, 2025, by = 0.1)) %>% 
+  mutate(
+    y_min = intercept + slope_min * x,
+    y_max = intercept + slope_max * x
+  )
+
+verdier_ODJ_SHOC_plot <- ggplot(verdier_info_ODJ_SHOC_plot, aes(color = line, fill = line)) +
+  geom_ribbon(aes(x = x, ymin = y_min, ymax = y_max, fill = line), alpha = 0.2, color = "white") +
+  geom_abline(aes(slope = slope, intercept = intercept, color = line), size = 2) +
+  theme_trends(base_size=12, color=NA) +
+  scale_color_manual(values = c("darkgrey", "darkblue")) +
+  scale_fill_manual(values = c("darkgrey", "darkblue")) + 
+  scale_x_continuous(limits = c(2012, 2025), breaks = 2012:2025) +
+  scale_y_continuous(limits = c(min(verdier_info_ODJ_SHOC_plot$y_min), 
+                                max(verdier_info_ODJ_SHOC_plot$y_max)), 
+                     breaks = seq(round(min(verdier_info_ODJ_SHOC_plot$y_min)), 
+                                  round(max(verdier_info_ODJ_SHOC_plot$y_max)), by = 15)) +
+  labs(x = "Année", y = "Effectifs relatifs", color = "Observatoire", fill = "Observatoire") +
+  theme(legend.position = "top") ; verdier_ODJ_SHOC_plot
+
+```
+
 
 ### !!! Sittelle torchepot
 
 différence pour hiver avec explications
+
+#### ODJ-STOC
+
+Tendance similaire
+
+```{r}
+#| echo: false
+
+sittelle_ODJ_STOC_dt <- comparaison_ODJ_STOC %>% 
+  filter(species == "Sittelle torchepot") %>% 
+  select(species, minYear, maxYear, estimate, pval, infIC, supIC, tendance_bilan)
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| fig-height: 4
+#| fig-width: 8
+
+sittelle_info_ODJ_STOC <- data.frame(
+  slope = sittelle_ODJ_STOC_dt$estimate,
+  intercept = - sittelle_ODJ_STOC_dt$estimate * ((2012 + 2025) / 2),
+  infIC = sittelle_ODJ_STOC_dt$infIC,
+  supIC = sittelle_ODJ_STOC_dt$supIC,
+  line = c("ODJ", "STOC")
+)
+
+sittelle_info_ODJ_STOC_plot <- sittelle_info_ODJ_STOC %>%
+  mutate(
+    slope_min = infIC, 
+    slope_max = supIC
+  ) %>%
+  tidyr::expand_grid(x = seq(2012, 2025, by = 0.1)) %>% 
+  mutate(
+    y_min = intercept + slope_min * x,
+    y_max = intercept + slope_max * x
+  )
+
+sittelle_ODJ_STOC_plot <- ggplot(sittelle_info_ODJ_STOC_plot, aes(color = line, fill = line)) +
+  geom_ribbon(aes(x = x, ymin = y_min, ymax = y_max, fill = line), alpha = 0.2, color = "white") +
+  geom_abline(aes(slope = slope, intercept = intercept, color = line), size = 2) +
+  theme_trends(base_size=12, color=NA) +
+  scale_color_manual(values = c("darkgrey", "darkgreen")) +
+  scale_fill_manual(values = c("darkgrey", "darkgreen")) + 
+  scale_x_continuous(limits = c(2012, 2025), breaks = 2012:2025) +
+  scale_y_continuous(limits = c(min(sittelle_info_ODJ_STOC_plot$y_min), 
+                                max(sittelle_info_ODJ_STOC_plot$y_max)), 
+                     breaks = seq(round(min(sittelle_info_ODJ_STOC_plot$y_min)), 
+                                  round(max(sittelle_info_ODJ_STOC_plot$y_max)), by = 15)) +
+  labs(x = "Année", y = "Effectifs relatifs", color = "Observatoire", fill = "Observatoire") +
+  theme(legend.position = "top") ; sittelle_ODJ_STOC_plot
+
+```
+
+#### ODJ-SHOC
+
+Tendance similaire
+
+
+```{r}
+#| echo: false
+
+sittelle_ODJ_SHOC_dt <- comparaison_ODJ_SHOC %>% 
+  filter(species == "Sittelle torchepot") %>% 
+  select(species, minYear, maxYear, estimate, pval, infIC, supIC, tendance_bilan)
+
+```
+
+```{r}
+#| echo: false
+#| warning: false
+#| fig-height: 4
+#| fig-width: 8
+
+sittelle_info_ODJ_SHOC <- data.frame(
+  slope = sittelle_ODJ_SHOC_dt$estimate,
+  intercept = - sittelle_ODJ_SHOC_dt$estimate * ((2012 + 2025) / 2),
+  infIC = sittelle_ODJ_SHOC_dt$infIC,
+  supIC = sittelle_ODJ_SHOC_dt$supIC,
+  line = c("ODJ", "SHOC")
+)
+
+sittelle_info_ODJ_SHOC_plot <- sittelle_info_ODJ_SHOC %>%
+  mutate(
+    slope_min = infIC, 
+    slope_max = supIC
+  ) %>%
+  tidyr::expand_grid(x = seq(2012, 2025, by = 0.1)) %>% 
+  mutate(
+    y_min = intercept + slope_min * x,
+    y_max = intercept + slope_max * x
+  )
+
+sittelle_ODJ_SHOC_plot <- ggplot(sittelle_info_ODJ_SHOC_plot, aes(color = line, fill = line)) +
+  geom_ribbon(aes(x = x, ymin = y_min, ymax = y_max, fill = line), alpha = 0.2, color = "white") +
+  geom_abline(aes(slope = slope, intercept = intercept, color = line), size = 2) +
+  theme_trends(base_size=12, color=NA) +
+  scale_color_manual(values = c("darkgrey", "darkblue")) +
+  scale_fill_manual(values = c("darkgrey", "darkblue")) + 
+  scale_x_continuous(limits = c(2012, 2025), breaks = 2012:2025) +
+  scale_y_continuous(limits = c(min(sittelle_info_ODJ_SHOC_plot$y_min), 
+                                max(sittelle_info_ODJ_SHOC_plot$y_max)), 
+                     breaks = seq(round(min(sittelle_info_ODJ_SHOC_plot$y_min)), 
+                                  round(max(sittelle_info_ODJ_SHOC_plot$y_max)), by = 15)) +
+  labs(x = "Année", y = "Effectifs relatifs", color = "Observatoire", fill = "Observatoire") +
+  theme(legend.position = "top") ; sittelle_ODJ_SHOC_plot
+
+```
+
 
 ### !!! Grosbec casse noyaux 
 
