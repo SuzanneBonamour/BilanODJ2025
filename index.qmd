@@ -319,21 +319,13 @@ Bien mettre en avant que le pourcentage d’opposé est plus faible que le simil
 
 ## !!! Exemple d'espèce à mettre en avant
 
-Pour chaque espèce mettre graphique de tendance commun ODJ et STOC/SHOC, une photo, un texte avec divers éléments sur l’espèce (écologie, conseils, explication tendance…)
-
-Graphique : une ligne par suivi, avec la pente estimée pour chaque suivi, et des couleurs différentes par suivi, en plein quand sign, en pointillé quand non sign/stable
-
-Se baser sur les sorties graphiques produites par Gwen
-
-ATTENTION : penser à bien revérifier les tendances du STOC et SHOC qui seront publiées dans le rapport qui sortira à l’automne
+*ATTENTION : penser à bien revérifier les tendances du STOC et SHOC qui seront publiées dans le rapport qui sortira à l’automne*
 
 ### Verdier d’Europe
 
 #### ODJ-STOC
 
 Tendance similaire
-
-!!!!!!!!!! ajout pourcentage dans les graphiques !!!!!!!!!!
 
 ```{r}
 #| echo: false
@@ -676,7 +668,7 @@ plot = ggplot() +
 
 ```
 
-### !!! Sittelle torchepot
+### Sittelle torchepot
 
 différence pour hiver avec explications
 
@@ -861,7 +853,7 @@ plot = ggplot() +
 
 ```
 
-### !!! Grosbec casse noyaux 
+### Grosbec casse noyaux 
 
 tendances opposées
 
@@ -938,7 +930,7 @@ plot = ggplot() +
 
 ```
 
-### !!! Rougegorge
+### Rougegorge
 
 tendances similaires été et hiver
 
@@ -1015,7 +1007,7 @@ plot = ggplot() +
 
 ```
 
-### !!! Mésange bleue
+### Mésange bleue
 
 tendances similaires
 
@@ -1092,7 +1084,7 @@ plot = ggplot() +
 
 ```
 
-### !!! Pinson des arbres
+### Pinson des arbres
 
 tendances similaires
 
