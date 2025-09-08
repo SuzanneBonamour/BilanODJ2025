@@ -117,17 +117,6 @@ comparaison_ODJ_STOC <- read_delim("1) data/longTermTrends-Comparaison-ODJ-STOC.
 comparaison_ODJ_SHOC <- read_delim("1) data/longTermTrends-Comparaison-ODJ-SHOC.csv", 
     delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
-# test
-
-# dataLongTerm <- read_csv("C:/Users/suzanne.bonamour/OneDrive - LPO/2) Data/7) ODJ bilan/1) Analyses/BilanODJ2025/1) data/longTermTrends_esp_BILAN2025.csv")
-
-dataLongTerm <- read.csv("1) data/longTermTrends_esp_BILAN2025.txt", comment.char="#")
-
-# dataLongTerm$species[dataLongTerm$species=="M�sange bleue"] <- "M�ange bleue"]
-dataLongTerm$species <- dataLongTerm$french_name
-
-
-
 # On garde que les espèces dans ODJ ---
 
 list_dans_ODJ <- c("Troglodyte mignon", "Accenteur mouchet", "Rougegorge familier", "Moineau domestique",
@@ -141,26 +130,6 @@ list_dans_ODJ <- c("Troglodyte mignon", "Accenteur mouchet", "Rougegorge familie
     "Grimpereau des jardins", "Hirondelle de fenêtre", "Martinet noir", "Choucas des tours", "Huppe fasciée",
     "Geai des chênes", "Épervier d'Europe", "Perruche à collier", "Gobemouche gris", "Moineau friquet", 
     "Mésange noire", "Pouillot véloce")
-
-# comparaison_ODJ_STOC <- comparaison_ODJ_STOC %>% 
-#   mutate(dans_ODJ = case_when(
-#     species %in%  list_dans_ODJ ~ "oui",
-#     TRUE ~ "non"))
-# 
-# length(list_dans_ODJ)
-# length(unique(comparaison_ODJ_STOC$species[comparaison_ODJ_STOC$dans_ODJ=="oui"]))
-# table(unique(comparaison_ODJ_STOC$species[comparaison_ODJ_STOC$dans_ODJ=="oui"]))
-# table(unique(comparaison_ODJ_STOC$species[comparaison_ODJ_STOC$dans_ODJ=="non"]))
-# 
-# comparaison_ODJ_SHOC <- comparaison_ODJ_SHOC %>% 
-#   mutate(dans_ODJ = case_when(
-#     species %in%  list_dans_ODJ ~ "oui",
-#     TRUE ~ "non"))
-# 
-# length(list_dans_ODJ)
-# length(unique(comparaison_ODJ_SHOC$species[comparaison_ODJ_SHOC$dans_ODJ=="oui"]))
-# table(unique(comparaison_ODJ_SHOC$species[comparaison_ODJ_SHOC$dans_ODJ=="oui"]))
-# table(unique(comparaison_ODJ_SHOC$species[comparaison_ODJ_SHOC$dans_ODJ=="non"]))
 
 comparaison_ODJ_STOC <- comparaison_ODJ_STOC %>% 
   filter(species %in% list_dans_ODJ)
@@ -271,18 +240,87 @@ liste_esp_ODJ_SHOC_1 %>%
 
 ## Comparaison des tendances
 
-### !!! ODJ-STOC
+### ODJ-STOC
 
-Expliquer qu’il y a tant d’espèces avec des patterns différents et tant d’esp pour lesquelles on peut faire des comparaisons.
+```{r}
+#| echo: false
+#| warning: false
+#| fig-height: 4
+#| fig-width: 8
 
-**Figure à l’appui** : camembert hiver/été avec tendances opposées et similaires (dans similaire mettre les tendances identiques et les tendances différentes ie stable versus déclin ou augmentation – ne pas expliquer cela au grand public).
+similaire_ODJ_STOC <- comparaison_ODJ_STOC %>% 
+  filter(Comparaison !="Incertain") %>% 
+  mutate(comparaison_bilan2025 = case_when(Comparaison == "Different" ~ "Similaire",
+                                           TRUE ~ Comparaison)) %>% 
+  dplyr::select(species, Protocole, comparaison_bilan2025) 
+  
+table(similaire_ODJ_STOC$comparaison_bilan2025)
 
-### !!! ODJ-SHOC
+# Préparation des données
+data_pie <- similaire_ODJ_STOC %>%
+  distinct(species, comparaison_bilan2025) %>%  # éviter les doublons
+  count(comparaison_bilan2025) %>%              
+  mutate(pct = n / sum(n) * 100,
+         lbl = paste0(n, " espèces\n", sprintf("%.1f", pct), "%"))
 
-Expliquer qu’il y a tant d’espèces avec des patterns différents et tant d’esp pour lesquelles on peut faire des comparaisons.
+# Graphique en donut
+ggplot(data_pie, aes(x = 2, y = pct, fill = comparaison_bilan2025)) +
+  geom_col(width = 1, color = "white", show.legend = TRUE) +
+  coord_polar(theta = "y") +
+  geom_text(aes(label = lbl), 
+            position = position_stack(vjust = 0.5), 
+            size = 5, fontface = "bold", color = "white") +
+  xlim(0.8, 2.5) +  # crée le trou au centre
+  scale_fill_manual(values = c("Similaire" = "darkgreen", "Oppose" = "pink")) +
+  theme_void() +
+  ggtitle("Comparaison des tendances démographiques ODJ - STOC") +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    legend.title = element_blank()
+  )
 
-**Figure à l’appui** : camembert hiver/été avec tendances opposées et similaires (dans similaire mettre les tendances identiques et les tendances différentes ie stable versus déclin ou augmentation – ne pas expliquer cela au grand public).
+```
 
+### ODJ-SHOC
+
+```{r}
+#| echo: false
+#| warning: false
+#| fig-height: 4
+#| fig-width: 8
+
+similaire_ODJ_SHOC <- comparaison_ODJ_SHOC %>% 
+  filter(Comparaison !="Incertain") %>% 
+  mutate(comparaison_bilan2025 = case_when(Comparaison == "Different" ~ "Similaire",
+                                           TRUE ~ Comparaison)) %>% 
+  dplyr::select(species, Protocole, comparaison_bilan2025) 
+  
+table(similaire_ODJ_SHOC$comparaison_bilan2025)
+
+# Préparation des données
+data_pie <- similaire_ODJ_SHOC %>%
+  distinct(species, comparaison_bilan2025) %>%  # éviter les doublons
+  count(comparaison_bilan2025) %>%              
+  mutate(pct = n / sum(n) * 100,
+         lbl = paste0(n, " espèces\n", sprintf("%.1f", pct), "%"))
+
+# Graphique en donut
+ggplot(data_pie, aes(x = 2, y = pct, fill = comparaison_bilan2025)) +
+  geom_col(width = 1, color = "white", show.legend = TRUE) +
+  coord_polar(theta = "y") +
+  geom_text(aes(label = lbl), 
+            position = position_stack(vjust = 0.5), 
+            size = 5, fontface = "bold", color = "white") +
+  xlim(0.8, 2.5) +  # crée le trou au centre
+  scale_fill_manual(values = c("Similaire" = "darkblue", "Oppose" = "pink")) +
+  theme_void() +
+  ggtitle("Comparaison des tendances démographiques ODJ - SHOC") +
+  theme(
+    plot.title = element_text(hjust = 0.5, size = 16, face = "bold"),
+    legend.title = element_blank()
+  )
+
+```
 ### Nombre d'espèces en déclin/augmentation/stable
 
 ### ODJ
@@ -360,6 +398,14 @@ Bien mettre en avant que le pourcentage d’opposé est plus faible que le simil
 *ATTENTION : penser à bien revérifier les tendances du STOC et SHOC qui seront publiées dans le rapport qui sortira à l’automne*
 
 ### Verdier d’Europe
+
+```{r}
+#| include: false
+dataLongTerm <- read.csv("1) data/longTermTrends_esp_BILAN2025.txt", comment.char="#")
+
+dataLongTerm$species <- dataLongTerm$french_name
+```
+
 
 #### ODJ-STOC
 
