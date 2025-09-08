@@ -1,6 +1,8 @@
 ---
 title: "Bilan ODJ 2025 : comparaison STOC & SHOC"
-format: html
+format: 
+  html :
+    toc: true
 editor: visual
 ---
 
