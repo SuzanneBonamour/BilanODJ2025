@@ -85,7 +85,7 @@ comparaison_ODJ_SHOC <- read_delim("1) data/longTermTrends-Comparaison-ODJ-SHOC.
 
 # dataLongTerm <- read_csv("C:/Users/suzanne.bonamour/OneDrive - LPO/2) Data/7) ODJ bilan/1) Analyses/BilanODJ2025/1) data/longTermTrends_esp_BILAN2025.csv")
 
-dataLongTerm <- read.csv("C:/Users/suzanne.bonamour/OneDrive - LPO/2) Data/7) ODJ bilan/1) Analyses/BilanODJ2025/1) data/longTermTrends_esp_BILAN2025.txt", comment.char="#")
+dataLongTerm <- read.csv("1) data/longTermTrends_esp_BILAN2025.txt", comment.char="#")
 
 # dataLongTerm$species[dataLongTerm$species=="M�sange bleue"] <- "M�ange bleue"]
 dataLongTerm$species <- dataLongTerm$french_name
@@ -601,7 +601,7 @@ verdier_ODJ_SHOC_plot <- ggplot(verdier_info_ODJ_SHOC_plot, aes(color = line, fi
 
 ```
 
-#### V2 from routine 
+#### V2 from routine
 
 ```{r}
 #| echo: false
@@ -675,7 +675,6 @@ plot = ggplot() +
                  legend.justification = "left") ; plot 
 
 ```
-
 
 ### !!! Sittelle torchepot
 
