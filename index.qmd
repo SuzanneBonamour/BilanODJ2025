@@ -890,7 +890,7 @@ plot = ggplot() +
 
 ```
 
-### Grosbec casse noyaux 
+### Grosbec casse-noyaux
 
 tendances opposées
 
