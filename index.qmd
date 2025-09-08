@@ -343,7 +343,7 @@ nb_esp_tendance_ODJ_plot <- ggplot(comparaison_ODJ_STOC[comparaison_ODJ_STOC$ten
 
 ### ODJ-STOC
 
-!!!!!!!!!!!!!!! verif jeu de données utilisé pour donut et historgram (pas même chiffres ???)
+!!!!!!!!!!!!!!! verif jeu de données utilisé pour donut et historgram (pas même chiffres ???) !!!!
 
 ```{r}
 #| echo: false
