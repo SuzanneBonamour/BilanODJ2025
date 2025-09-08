@@ -254,7 +254,7 @@ similaire_ODJ_STOC <- comparaison_ODJ_STOC %>%
                                            TRUE ~ Comparaison)) %>% 
   dplyr::select(species, Protocole, comparaison_bilan2025) 
   
-table(similaire_ODJ_STOC$comparaison_bilan2025)
+# table(similaire_ODJ_STOC$comparaison_bilan2025)
 
 # Préparation des données
 data_pie <- similaire_ODJ_STOC %>%
@@ -295,7 +295,7 @@ similaire_ODJ_SHOC <- comparaison_ODJ_SHOC %>%
                                            TRUE ~ Comparaison)) %>% 
   dplyr::select(species, Protocole, comparaison_bilan2025) 
   
-table(similaire_ODJ_SHOC$comparaison_bilan2025)
+# table(similaire_ODJ_SHOC$comparaison_bilan2025)
 
 # Préparation des données
 data_pie <- similaire_ODJ_SHOC %>%
@@ -321,7 +321,7 @@ ggplot(data_pie, aes(x = 2, y = pct, fill = comparaison_bilan2025)) +
   )
 
 ```
-### Nombre d'espèces en déclin/augmentation/stable
+## Nombre d'espèces en déclin/augmentation/stable
 
 ### ODJ
 
@@ -343,13 +343,26 @@ nb_esp_tendance_ODJ_plot <- ggplot(comparaison_ODJ_STOC[comparaison_ODJ_STOC$ten
 
 ### ODJ-STOC
 
+!!!!!!!!!!!!!!! verif jeu de données utilisé pour donut et historgram (pas même chiffres ???)
+
 ```{r}
 #| echo: false
 #| warning: false
 #| fig-height: 4
 #| fig-width: 8
 
-nb_esp_tendance_ODJ_STOC_plot <- ggplot(comparaison_ODJ_STOC[comparaison_ODJ_STOC$tendance_bilan!="incertain",], aes(x = tendance_bilan, fill = Protocole)) +
+hist_ODJ_STOC_dt <- comparaison_ODJ_STOC %>% 
+  filter(tendance_bilan != "incertain") %>% 
+  dplyr::select(french_name, Protocole, tendance_bilan)
+
+list_ODJ_STOC <- as.data.frame(table(hist_ODJ_STOC_dt$french_name)) %>% 
+  filter(Freq == 2) %>% 
+  dplyr::select(Var1)
+
+hist_ODJ_STOC_dt_2 <- hist_ODJ_STOC_dt %>% 
+  filter(french_name %in% list_ODJ_STOC$Var1)
+
+nb_esp_tendance_ODJ_STOC_plot <- ggplot(hist_ODJ_STOC_dt_2, aes(x = tendance_bilan, fill = Protocole)) +
   geom_bar(position = "dodge") +
   scale_fill_manual(values = c("ODJ" = "darkgrey", "STOC" = "darkgreen")) +
   labs(
