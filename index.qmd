@@ -16,6 +16,7 @@ library(extrafont)
 library(ggthemes)
 library(ggplot2)
 library(grid)
+library(ggtext)
 ```
 
 ```{r}
@@ -69,7 +70,7 @@ En confrontant les données de l'Observatoire ODJ avec deux autres grands protoc
 
 Ce travail préliminaire a été mené de front par Marion Goascoz lors de stage de fin d'étude en 2025 (Master 2 Bidiversité-Ecologie-Evolution BEE, Sorbonne Université, Université Paris-Saclay, Muséum National d'Histoire Naturelle MNHN), co-encadrée par Charles Thévenin (CESCO, MNHN), Suzanne Bonamour (LPO France) et Benoit Fontaine (CESCO, MNHN, OFB).
 
-Les résultats sont très encourageants (bien qu'encore à préciser sur le plus long terme) : dans de nombreux cas, vos observations aboutissent à des tendances similaires sur les mêmes périodes d'étude, ce qui montre la grande valeur scientifique de l'Observatoire ODJ bien qu'alimenté par des Ornithologues pour la plupart débutants.
+Les résultats sont très encourageants (bien qu'encore à préciser sur le plus long terme) : dans de nombreux cas, vos observations aboutissent à des tendances equivalents sur les mêmes périodes d'étude, ce qui montre la grande valeur scientifique de l'Observatoire ODJ bien qu'alimenté par des Ornithologues pour la plupart débutants.
 
 Bien sûr, certaines différences apparaissent. En hiver par exemple, la présence de mangeoires attire davantage d’oiseaux dans les jardins, ce qui peut expliquer des écarts avec le suivi SHOC. De même, les habitats étudiés ne sont pas toujours les mêmes : les protocoles d’experts couvrent souvent des zones rurales ou naturelles, tandis qu’ODJ reflète les dynamiques de populations des oiseaux en jardin, et donc en milieu urbain ou périurbain. Ces différences sont intéressantes, car elles permettent de mieux comprendre comment les oiseaux s’adaptent à des environnements variés.
 
@@ -81,7 +82,7 @@ En somme, les observations ODJ complètent et enrichissent celles des experts. E
 
 Grâce à vos observations régulières dans le cadre d’Oiseaux des Jardins, nous avons pu comparer ces données à celles issues de suivis menés par des ornithologues confirmés. Cette comparaison apporte des enseignements précieux sur l’évolution des populations d’oiseaux en France.
 
-Le travail, réalisé en 2025 par Marion Goascoz (Master 2 BEE, Sorbonne Université, Université Paris-Saclay, MNHN) avec l’appui de la LPO et du CESCO, a confronté ODJ à deux grands protocoles scientifiques : le STOC (printemps) et le SHOC (hiver). Les résultats sont très encourageants : dans de nombreux cas, vos observations aboutissent à des tendances similaires à celles des spécialistes, confirmant la grande valeur scientifique d’ODJ, même si la majorité des participants sont des débutants.
+Le travail, réalisé en 2025 par Marion Goascoz (Master 2 BEE, Sorbonne Université, Université Paris-Saclay, MNHN) avec l’appui de la LPO et du CESCO, a confronté ODJ à deux grands protocoles scientifiques : le STOC (printemps) et le SHOC (hiver). Les résultats sont très encourageants : dans de nombreux cas, vos observations aboutissent à des tendances equivalents à celles des spécialistes, confirmant la grande valeur scientifique d’ODJ, même si la majorité des participants sont des débutants.
 
 Certaines différences existent, notamment en hiver où les mangeoires attirent davantage d’oiseaux, ou parce que les habitats étudiés diffèrent (zones naturelles pour STOC/SHOC, jardins urbains pour ODJ). Mais loin d’être des limites, ces contrastes permettent de mieux comprendre comment les oiseaux s’adaptent à des environnements variés.
 
@@ -91,7 +92,7 @@ Vos comptages ne sont donc pas seulement utiles à l’échelle de votre jardin 
 
 *Résumé Marion :*
 
-*"Ce mémoire compare les tendances temporelles d’abondance d’oiseaux communs issues de trois protocoles de sciences participatives : STOC, SHOC (naturalistes) et ODJ (grand public). L’objectif est d’évaluer la cohérence des tendances entre ces programmes, bien que leurs approches méthodologiques et leur public diffèrent. Les résultats montrent qu’environ la moitié des tendances estimées sont similaires entre ODJ et SHOC (hiver), mais moins nombreuses avec le STOC (printemps). Les différences peuvent s’expliquer par des biais d’échantillonnage, l’écologie des espèces (ex. présence de mangeoires) et le niveau d'expertise des observateurs. Notre étude suggère que les données du protocole ODJ, malgré leurs limites, sont utiles pour suivre les dynamiques de populations urbaines. Des améliorations méthodologiques sont proposées pour affiner l’interprétation de ces tendances divergentes."*
+*"Ce mémoire compare les tendances temporelles d’abondance d’oiseaux communs issues de trois protocoles de sciences participatives : STOC, SHOC (naturalistes) et ODJ (grand public). L’objectif est d’évaluer la cohérence des tendances entre ces programmes, bien que leurs approches méthodologiques et leur public diffèrent. Les résultats montrent qu’environ la moitié des tendances estimées sont equivalents entre ODJ et SHOC (hiver), mais moins nombreuses avec le STOC (printemps). Les différences peuvent s’expliquer par des biais d’échantillonnage, l’écologie des espèces (ex. présence de mangeoires) et le niveau d'expertise des observateurs. Notre étude suggère que les données du protocole ODJ, malgré leurs limites, sont utiles pour suivre les dynamiques de populations urbaines. Des améliorations méthodologiques sont proposées pour affiner l’interprétation de ces tendances divergentes."*
 
 *Intro Marion :*
 
@@ -105,7 +106,7 @@ Vos comptages ne sont donc pas seulement utiles à l’échelle de votre jardin 
 
 *L’Observatoire participatif “Oiseaux Des Jardins” (ODJ) est un programme de sciences participatives co-géré par la Ligue pour la Protection des Oiseaux (LPO) et le Muséum National d’Histoire Naturelle (MNHN, Paris), ayant commencé au printemps 2012. L’objectif de ce programme grand public est d’enregistrer l’abondance des espèces dans les jardins privés et publics tout au long de l’année, à l’échelle nationale. On comptabilise au total 48 espèces visées par l’observatoire ODJ, dont une uniquement observée l’hiver, le pinson du nord, et quatre à partir du printemps à savoir l’hirondelle rustique, l’hirondelle de fenêtre, le martinet noir et la huppe fasciée. A ce jour, 85 231 participants ont transmis des données au moins une fois, couvrant l’ensemble du territoire (Figure 2). Depuis le début, le nombre de participants a augmenté chaque année de 1.28 % en moyenne. La majorité des participants n’a envoyé des données que pendant une seule année soit 67.6%, 14.6 % pendant deux ans, et 17.8% pendant plus de deux ans. ODJ demeure le programme de science participative du MNHN comptabilisant le taux de fidélisation et de recrutement le plus élevé \[2\], ce qui en fait donc un des programmes possédant la plus grande base de données.*
 
-*A ce jour, on estime que plus de 70% des chercheurs ne réussissent pas à reproduire les expériences d’autres scientifiques et plus de la moitié échouent à reproduire leurs propres expériences \[16\]. Il est donc primordial de vérifier si les tendances spécifiques estimées de nos populations d’oiseaux via le STOC et le SHOC sont corroborées par les données d’autres protocoles nationaux comme ODJ. De plus, les tendances pour une même espèce peuvent différer selon les saisons. En effet, pour des espèces migratrices, les protocoles d’échantillonnage en hiver viseront des populations d’individus en migration hivernale tandis que les protocoles de printemps recueilleront des données sur des individus résidents et se reproduisant sur le territoire. Sur ce point, les protocoles ODJ printemps/STOC ainsi qu’ODJ hiver/SHOC échantillonnent des populations semblables. A la différence des protocoles STOC et SHOC qui reposent sur les observations d’ornithologues confirmés, le programme ODJ fait appel majoritairement à des néophytes. A cela s’ajoute le biais géographique d’échantillonnage plus concentré dans les jardins de zones urbaines pour le protocole ODJ. Comparer les tendances selon la même méthode d’estimation des tendances suivant différents protocoles et observateurs devrait confirmer les estimations établies. On souhaite donc savoir si l’on observe des différences dans les tendances temporelles d’abondance, calculées selon la même méthode, à partir de différents protocoles de suivi. On suppose que malgré la différence de niveau des participants et le biais géographique que la majorité des tendances estimées seront similaires. En effet, ces tendances seront déterminées suivant la même méthode pour les différents protocoles et sur des périodes d’échantillonnage semblable, donc les tendances devraient être majoritairement équivalentes. En revanche, on pourrait s’attendre à observer davantage de différence dans les tendances estimées en hiver où la présence de mangeoire et de nourriture croissante (achat de graines en augmentation sur le site LPO) dans les jardins constitue un effet attracteur important qu’on ne retrouvera pas dans les milieux échantillonnés par le SHOC. En partie pour cette raison, les tendances spécifiques sont susceptibles de varier entre les saisons hivernale et printanière mais également dû à une détection plus faible en hiver."*
+*A ce jour, on estime que plus de 70% des chercheurs ne réussissent pas à reproduire les expériences d’autres scientifiques et plus de la moitié échouent à reproduire leurs propres expériences \[16\]. Il est donc primordial de vérifier si les tendances spécifiques estimées de nos populations d’oiseaux via le STOC et le SHOC sont corroborées par les données d’autres protocoles nationaux comme ODJ. De plus, les tendances pour une même espèce peuvent différer selon les saisons. En effet, pour des espèces migratrices, les protocoles d’échantillonnage en hiver viseront des populations d’individus en migration hivernale tandis que les protocoles de printemps recueilleront des données sur des individus résidents et se reproduisant sur le territoire. Sur ce point, les protocoles ODJ printemps/STOC ainsi qu’ODJ hiver/SHOC échantillonnent des populations semblables. A la différence des protocoles STOC et SHOC qui reposent sur les observations d’ornithologues confirmés, le programme ODJ fait appel majoritairement à des néophytes. A cela s’ajoute le biais géographique d’échantillonnage plus concentré dans les jardins de zones urbaines pour le protocole ODJ. Comparer les tendances selon la même méthode d’estimation des tendances suivant différents protocoles et observateurs devrait confirmer les estimations établies. On souhaite donc savoir si l’on observe des différences dans les tendances temporelles d’abondance, calculées selon la même méthode, à partir de différents protocoles de suivi. On suppose que malgré la différence de niveau des participants et le biais géographique que la majorité des tendances estimées seront equivalents. En effet, ces tendances seront déterminées suivant la même méthode pour les différents protocoles et sur des périodes d’échantillonnage semblable, donc les tendances devraient être majoritairement équivalentes. En revanche, on pourrait s’attendre à observer davantage de différence dans les tendances estimées en hiver où la présence de mangeoire et de nourriture croissante (achat de graines en augmentation sur le site LPO) dans les jardins constitue un effet attracteur important qu’on ne retrouvera pas dans les milieux échantillonnés par le SHOC. En partie pour cette raison, les tendances spécifiques sont susceptibles de varier entre les saisons hivernale et printanière mais également dû à une détection plus faible en hiver."*
 
 ## Données
 
@@ -167,15 +168,6 @@ comparaison_ODJ_SHOC <- comparaison_ODJ_SHOC %>%
 
 table(comparaison_ODJ_SHOC$tendance_bilan)
 
-comparaison_ODJ_STOC$tendance_bilan <- factor(
-  comparaison_ODJ_STOC$tendance_bilan,
-  levels = c("déclin", "stable", "augmentation", "incertain", "autre")
-)
-
-comparaison_ODJ_SHOC$tendance_bilan <- factor(
-  comparaison_ODJ_SHOC$tendance_bilan,
-  levels = c("déclin", "stable", "augmentation", "incertain", "autre")
-)
 ```
 
 ## Listes des espèces comparées
@@ -248,16 +240,19 @@ liste_esp_ODJ_SHOC_1 %>%
 #| fig-height: 4
 #| fig-width: 8
 
-similaire_ODJ_STOC <- comparaison_ODJ_STOC %>% 
+equivalent_ODJ_STOC <- comparaison_ODJ_STOC %>% 
   filter(Comparaison !="Incertain") %>% 
-  mutate(comparaison_bilan2025 = case_when(Comparaison == "Different" ~ "Similaire",
+  mutate(comparaison_bilan2025 = case_when(Comparaison == "Different" ~ "Equivalent",
+                                           Comparaison == "Similaire" ~ "Equivalent",
                                            TRUE ~ Comparaison)) %>% 
   dplyr::select(species, Protocole, comparaison_bilan2025) 
+
+list_esp_oppose_ODJ_STOC <- unique(equivalent_ODJ_STOC$species[equivalent_ODJ_STOC$comparaison_bilan2025=="Oppose"])
   
-# table(similaire_ODJ_STOC$comparaison_bilan2025)
+# table(equivalent_ODJ_STOC$comparaison_bilan2025)
 
 # Préparation des données
-data_pie <- similaire_ODJ_STOC %>%
+data_pie <- equivalent_ODJ_STOC %>%
   distinct(species, comparaison_bilan2025) %>%  # éviter les doublons
   count(comparaison_bilan2025) %>%              
   mutate(pct = n / sum(n) * 100,
@@ -271,7 +266,7 @@ ggplot(data_pie, aes(x = 2, y = pct, fill = comparaison_bilan2025)) +
             position = position_stack(vjust = 0.5), 
             size = 5, fontface = "bold", color = "white") +
   xlim(0.8, 2.5) +  # crée le trou au centre
-  scale_fill_manual(values = c("Similaire" = "darkgreen", "Oppose" = "pink")) +
+  scale_fill_manual(values = c("Equivalent" = "darkgreen", "Oppose" = "pink")) +
   theme_void() +
   ggtitle("Comparaison des tendances démographiques ODJ - STOC") +
   theme(
@@ -280,6 +275,7 @@ ggplot(data_pie, aes(x = 2, y = pct, fill = comparaison_bilan2025)) +
   )
 
 ```
+Espèces pour lesquelles les estimations de tendances démographiques sont opposées entre les Observatoires ODJ et STOC : `r list_esp_oppose_ODJ_STOC`
 
 ### ODJ-SHOC
 
@@ -289,16 +285,19 @@ ggplot(data_pie, aes(x = 2, y = pct, fill = comparaison_bilan2025)) +
 #| fig-height: 4
 #| fig-width: 8
 
-similaire_ODJ_SHOC <- comparaison_ODJ_SHOC %>% 
+equivalent_ODJ_SHOC <- comparaison_ODJ_SHOC %>% 
   filter(Comparaison !="Incertain") %>% 
-  mutate(comparaison_bilan2025 = case_when(Comparaison == "Different" ~ "Similaire",
+  mutate(comparaison_bilan2025 = case_when(Comparaison == "Different" ~ "Equivalent",
+                                           Comparaison == "Similaire" ~ "Equivalent",
                                            TRUE ~ Comparaison)) %>% 
   dplyr::select(species, Protocole, comparaison_bilan2025) 
-  
-# table(similaire_ODJ_SHOC$comparaison_bilan2025)
+
+list_esp_oppose_ODJ_SHOC <- unique(equivalent_ODJ_SHOC$species[equivalent_ODJ_SHOC$comparaison_bilan2025=="Oppose"])
+
+# table(equivalent_ODJ_SHOC$comparaison_bilan2025)
 
 # Préparation des données
-data_pie <- similaire_ODJ_SHOC %>%
+data_pie <- equivalent_ODJ_SHOC %>%
   distinct(species, comparaison_bilan2025) %>%  # éviter les doublons
   count(comparaison_bilan2025) %>%              
   mutate(pct = n / sum(n) * 100,
@@ -312,7 +311,7 @@ ggplot(data_pie, aes(x = 2, y = pct, fill = comparaison_bilan2025)) +
             position = position_stack(vjust = 0.5), 
             size = 5, fontface = "bold", color = "white") +
   xlim(0.8, 2.5) +  # crée le trou au centre
-  scale_fill_manual(values = c("Similaire" = "darkblue", "Oppose" = "pink")) +
+  scale_fill_manual(values = c("Equivalent" = "darkblue", "Oppose" = "pink")) +
   theme_void() +
   ggtitle("Comparaison des tendances démographiques ODJ - SHOC") +
   theme(
@@ -321,76 +320,7 @@ ggplot(data_pie, aes(x = 2, y = pct, fill = comparaison_bilan2025)) +
   )
 
 ```
-## Nombre d'espèces en déclin/augmentation/stable
-
-### ODJ
-
-```{r}
-#| echo: false
-#| warning: false
-#| fig-height: 4
-#| fig-width: 8
-
-nb_esp_tendance_ODJ_plot <- ggplot(comparaison_ODJ_STOC[comparaison_ODJ_STOC$tendance_bilan!="incertain" & comparaison_ODJ_STOC$Protocole == "ODJ",], aes(x = tendance_bilan)) +
-  geom_bar(position = "dodge", fill = "darkgrey") +
-  labs(
-    x = "Tendance temporelle",
-    y = "Nombre d'espèces",
-    fill = "Observatoire"
-  ) +
-  theme_histo() ; nb_esp_tendance_ODJ_plot
-```
-
-### ODJ-STOC
-
-!!!!!!!!!!!!!!! verif jeu de données utilisé pour donut et historgram (pas même chiffres ???) !!!!
-
-```{r}
-#| echo: false
-#| warning: false
-#| fig-height: 4
-#| fig-width: 8
-
-hist_ODJ_STOC_dt <- comparaison_ODJ_STOC %>% 
-  filter(tendance_bilan != "incertain") %>% 
-  dplyr::select(french_name, Protocole, tendance_bilan)
-
-list_ODJ_STOC <- as.data.frame(table(hist_ODJ_STOC_dt$french_name)) %>% 
-  filter(Freq == 2) %>% 
-  dplyr::select(Var1)
-
-hist_ODJ_STOC_dt_2 <- hist_ODJ_STOC_dt %>% 
-  filter(french_name %in% list_ODJ_STOC$Var1)
-
-nb_esp_tendance_ODJ_STOC_plot <- ggplot(hist_ODJ_STOC_dt_2, aes(x = tendance_bilan, fill = Protocole)) +
-  geom_bar(position = "dodge") +
-  scale_fill_manual(values = c("ODJ" = "darkgrey", "STOC" = "darkgreen")) +
-  labs(
-    x = "Tendance temporelle",
-    y = "Nombre d'espèces",
-    fill = "Observatoire"
-  ) +
-  theme_histo() ; nb_esp_tendance_ODJ_STOC_plot
-```
-
-### ODJ-SHOC
-
-```{r}
-#| echo: false
-#| warning: false
-#| fig-height: 4
-#| fig-width: 8
-#| 
-nb_esp_tendance_ODJ_SHOC_plot <- ggplot(comparaison_ODJ_SHOC[comparaison_ODJ_SHOC$tendance_bilan!="incertain",], aes(x = tendance_bilan, fill = Protocole)) +
-  geom_bar(position = "dodge") +
-  scale_fill_manual(values = c("ODJ" = "darkgrey", "SHOC" = "darkblue")) +
-  labs(
-    x = "Tendance temporelle",
-    y = "Nombre d'espèces",
-    fill = "Observatoire"
-  ) +
-  theme_histo() ; nb_esp_tendance_ODJ_SHOC_plot
-```
+Espèces pour lesquelles les estimations de tendances démographiques sont opposées entre les Observatoires ODJ et SHOC : `r list_esp_oppose_ODJ_SHOC`
 
 ## Interprétation des résultats
 
@@ -398,13 +328,13 @@ nb_esp_tendance_ODJ_SHOC_plot <- ggplot(comparaison_ODJ_SHOC[comparaison_ODJ_SHO
 
 Bien préciser que cela ouvre de nouvelles pistes d’analyse et de suivi. On illustre cela avec quelques exemples (texte)
 
-Bien mettre en avant que le pourcentage d’opposé est plus faible que le similaire (texte)
+Bien mettre en avant que le pourcentage d’opposé est plus faible que le equivalent (texte)
 
 ### !!! ODJ-SHOC
 
 Bien préciser que cela ouvre de nouvelles pistes d’analyse et de suivi. On illustre cela avec quelques exemples (texte)
 
-Bien mettre en avant que le pourcentage d’opposé est plus faible que le similaire (texte)
+Bien mettre en avant que le pourcentage d’opposé est plus faible que le equivalent (texte)
 
 ## Exemple d'espèce à mettre en avant
 
@@ -419,6 +349,176 @@ dataLongTerm$species <- dataLongTerm$french_name
 STOCdataLongTerm <- read.csv("1) data/STOC_longTermTrends_esp_BILAN2025.txt", comment.char="#")
 
 STOCdataLongTerm$species <- STOCdataLongTerm$french_name
+```
+
+```{r}
+#| echo: false
+#| warning: false
+
+plot_ODJ_STOC <- function(sp_vec, 
+                          dataLongTerm, 
+                          STOCdataLongTerm, 
+                          y_limits = c(0.7, 1.4), 
+                          y_breaks = seq(0.7, 1.4, by = 0.15),
+                          color_stoc = "#006400",
+                          out_dir = "figures",
+                          save_plots = TRUE) {
+  
+  # Créer le dossier si besoin
+  if (save_plots && !dir.exists(out_dir)) {
+    dir.create(out_dir, recursive = TRUE)
+  }
+  
+  plot_one_species <- function(sp) {
+    sp <- as.character(sp)  # sécurité
+    
+    # --- ODJ -------------------------------------------------------------------
+    dataLT_sp <- dataLongTerm[dataLongTerm$species == sp,] %>%
+      dplyr::select(-trendEBCC) %>%
+      na.omit()
+    
+    if (nrow(dataLT_sp) == 0) {
+      message("⚠️ Pas de données ODJ pour : ", sp)
+      return(NULL)
+    }
+    
+    yearValues <- dataLT_sp$minYear:dataLT_sp$maxYear
+    
+    estLT <- dataLT_sp$estimate * (yearValues - min(yearValues))
+    estLT <- estLT - mean(estLT)
+    
+    dataPlot <- data.frame(
+      year = yearValues,
+      estimate = exp(estLT),
+      estimate_exp = exp(estLT),
+      infIC = NA,
+      supIC = NA,
+      group = "LT",
+      rep = 1
+    )
+    
+    yRef <- 1
+    
+    # --- STOC ------------------------------------------------------------------
+    dataLT_sp_STOC <- STOCdataLongTerm[STOCdataLongTerm$species == sp,] %>%
+      dplyr::select(-trendEBCC) %>%
+      na.omit()
+    
+    if (nrow(dataLT_sp_STOC) == 0) {
+      message("⚠️ Pas de données STOC pour : ", sp)
+      return(NULL)
+    }
+    
+    yearValues_STOC <- dataLT_sp_STOC$minYear:dataLT_sp_STOC$maxYear
+    
+    estLT_STOC <- dataLT_sp_STOC$estimate * (yearValues_STOC - min(yearValues_STOC))
+    estLT_STOC <- estLT_STOC - mean(estLT_STOC)
+    
+    dataPlot_STOC <- data.frame(
+      year = yearValues_STOC,
+      estimate = exp(estLT_STOC),
+      estimate_exp = exp(estLT_STOC),
+      infIC = NA,
+      supIC = NA,
+      group = "LT",
+      rep = 1
+    )
+    
+    # --- Infos pour le sous-titre ----------------------------------------------
+    perc_odj  <- as.character(dataLT_sp$perc[1])
+    inf_odj   <- as.character(dataLT_sp$infPerc[1])
+    sup_odj   <- as.character(dataLT_sp$supPerc[1])
+    
+    perc_stoc <- as.character(dataLT_sp_STOC$perc[1])
+    inf_stoc  <- as.character(dataLT_sp_STOC$infPerc[1])
+    sup_stoc  <- as.character(dataLT_sp_STOC$supPerc[1])
+    
+    subtitle <- paste0(
+      "<span style='color:black;'>ODJ : ", perc_odj,
+      "% [", inf_odj, "% ; ", sup_odj, "%]</span><br>",
+      "<span style='color:", color_stoc, ";'>STOC : ", perc_stoc,
+      "% [", inf_stoc, "% ; ", sup_stoc, "%]</span>"
+    )
+    
+    # --- significance (STOC seulement ici) -------------------------------------
+    signLT_STOC <- dataLT_sp_STOC$pval
+    xSignLT_STOC <- dataLT_sp_STOC$maxYear + 1 
+    ySignLT_STOC <- mean(dataPlot_STOC$estimate[dataPlot_STOC$year == dataLT_sp_STOC$maxYear])
+    
+    # --- Plot ------------------------------------------------------------------
+    p <- ggplot() +
+      geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
+      geom_line(data = dataPlot, aes(x = year, y = estimate),
+                alpha = 1, linewidth = 1.5, color = "black") +
+      geom_line(data = dataPlot_STOC, aes(x = year, y = estimate),
+                alpha = 1, linewidth = 1.5, color = color_stoc) +
+      ggtitle(sp) +
+      scale_x_continuous(
+        breaks = yearValues,
+        limits = c(dataLT_sp$minYear[1] - 0.5, dataLT_sp$maxYear[1] + 0.5)
+      ) +
+      scale_y_continuous(breaks = y_breaks, limits = y_limits) +
+      theme_trends(base_size = 12, color = NA) +
+      labs(
+        title = sp,
+        subtitle = subtitle,
+        x = "Année",
+        y = "Abondance relative",
+        color = "Observatoire",
+        fill = "Observatoire"
+      ) +
+      theme(
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+        legend.text = element_text(size = 14),
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 18),
+        title = element_text(size = 15),
+        panel.grid.minor = element_blank(),
+        legend.position = "top",
+        legend.justification = "left",
+        plot.subtitle = ggtext::element_markdown(size = 13, lineheight = 1.1)
+      )
+    
+    # Ajouter étoile si pval < 0.05
+    if (!is.na(signLT_STOC) && signLT_STOC < 0.05) {
+      p <- p + annotate("text", label = "*", color = color_stoc, size = 6, 
+                        x = xSignLT_STOC - 0.5, y = ySignLT_STOC + 0.02)
+    }
+    
+    # --- Sauvegarde si demandé -------------------------------------------------
+    if (save_plots) {
+      safe_name <- str_replace_all(sp, "[^[:alnum:]_]", "_")   # nettoie accents et espaces
+      file_base <- normalizePath(file.path(out_dir, safe_name), mustWork = FALSE)
+      file_base <- as.character(file_base)  # forcer string simple
+      
+      tryCatch({
+        ggsave(paste0(file_base, ".png"), p, width = 7, height = 5, dpi = 300)
+        ggsave(paste0(file_base, ".svg"), p, width = 7, height = 5)
+      }, error = function(e) {
+        message("❌ Erreur lors de la sauvegarde pour : ", sp, " -> ", e$message)
+      })
+    }
+    
+    return(p)
+  }
+  
+  # Générer et afficher chaque graphique
+  plots <- lapply(sp_vec, plot_one_species)
+  plots <- plots[!sapply(plots, is.null)]
+  
+  for (p in plots) print(p)  # affichage dans Quarto
+  
+  invisible(plots)
+}
+
+sp_vec <-c("Verdier d'Europe","Sittelle torchepot","Grosbec casse-noyaux","Rougegorge familier","Pinson des arbres")
+
+plot_ODJ_STOC(sp_vec, dataLongTerm, STOCdataLongTerm, out_dir = "figures")
+
+
+
+# plot_ODJ_STOC(sp_vec, dataLongTerm, STOCdataLongTerm, out_dir = "figures")
+
 ```
 
 ### Verdier d’Europe
@@ -489,96 +589,61 @@ signLT_STOC <- round(dataLT_sp_STOC$pval,16)
 xSignLT_STOC <- dataLT_sp_STOC$maxYear + 1 # x-position of the significance
 ySignLT_STOC <- mean(dataPlot_STOC$estimate[dataPlot_STOC$year == dataLT_sp_STOC$maxYear]) # y-position of the significance
 
-# --- growth rate ---
-grLT_STOC = dataLT_sp_STOC$estimate
-grLT_STOC = round(grLT_STOC, 3)
-xGrLT_STOC = dataLT_sp_STOC$minYear - 1
-yGrLT_STOC = mean(dataPlot_STOC$estimate[dataPlot_STOC$year == min(dataPlot_STOC$year)])
-
 # plot -------------------------------------------------------------------------
 
-subtitle <- paste0("ODJ : ", dataLT_sp$perc, 
-                           "% [ ", dataLT_sp$infPerc, "% ; ",
-                           dataLT_sp$supPerc, "%]", 
-                           "\nSTOC : ", dataLT_sp_STOC$perc, 
-                           "% [ ", dataLT_sp_STOC$infPerc, "% ; ",
-                           dataLT_sp_STOC$supPerc, "%]")
+# -> s'assurer que les valeurs sont scalaires (prend le 1er élément si vecteur)
+perc_odj  <- as.character(dataLT_sp$perc[1])
+inf_odj   <- as.character(dataLT_sp$infPerc[1])
+sup_odj   <- as.character(dataLT_sp$supPerc[1])
+
+perc_stoc <- as.character(dataLT_sp_STOC$perc[1])
+inf_stoc  <- as.character(dataLT_sp_STOC$infPerc[1])
+sup_stoc  <- as.character(dataLT_sp_STOC$supPerc[1])
+
+# couleur en hex pour plus de sûreté
+green_hex <- "#006400"  # darkgreen
+
+subtitle <- paste0(
+  "<span style='color:black;'>ODJ : ", perc_odj,
+  "% [", inf_odj, "% ; ", sup_odj, "%]</span><br>",
+  "<span style='color:", green_hex, ";'>STOC : ", perc_stoc,
+  "% [", inf_stoc, "% ; ", sup_stoc, "%]</span>"
+)
 
 plot_verdier_ODJ_STOC = ggplot() +
-                          geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
-                          # ODJ
-                          geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
-                                             alpha = 1, linewidth = 1.1, color = "darkgrey") +
-                          annotate(geom = "text", label = signLT, color = "darkgrey", size = 5, 
-                                   x = xSignLT, y = ySignLT) +
-                          annotate(geom = "text", label = grLT, color = "darkgrey", size = 5, 
-                                   x = xGrLT, y = yGrLT) +
-                          # STOC
-                          geom_line(data = dataPlot_STOC[dataPlot_STOC$group == "LT",], aes(x = year, y = estimate),
-                                             alpha = 1, linewidth = 1.1, color = "darkgreen") +
-                          annotate(geom = "text", label = signLT_STOC, color = "darkgreen", size = 5, 
-                                   x = xSignLT_STOC, y = ySignLT_STOC) +
-                          annotate(geom = "text", label = grLT_STOC, color = "darkgreen", size = 5, 
-                                   x = xGrLT_STOC, y = yGrLT_STOC) +
-                          ggtitle(sp) +
-                          scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
-                          scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
-                          theme_trends(base_size = 12, color = NA) +
-                          labs(
-                            title = "Verdier d'Europe",
-                            subtitle = subtitle,
-                            x = "Année",
-                            y = "Abondance relative",
-                            color = "Observatoire",
-                            fill = "Observatoire"
-                          ) + 
-                          theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-                                         legend.text = element_text(size = 14),
-                                         axis.text = element_text(size = 14),
-                                         axis.title = element_text(size = 18),
-                                         title = element_text(size = 15),
-                                         panel.grid.minor = element_blank(),
-                                         legend.position = "top",
-                                         legend.justification = "left") ; plot_verdier_ODJ_STOC 
+  geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
+  # ODJ
+  geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
+            alpha = 1, linewidth = 1.5, color = "black") +
+  # STOC
+  geom_line(data = dataPlot_STOC[dataPlot_STOC$group == "LT",], aes(x = year, y = estimate),
+            alpha = 1, linewidth = 1.5, color = "darkgreen") +
+  ggtitle(sp) +
+  scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear[1] - 0.1, dataLT_sp$maxYear[1] + 0.1)) +
+  scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.15), limits = c(0.7, 1.4)) +
+  theme_trends(base_size = 12, color = NA) +
+  labs(
+    title = "Verdier d'Europe",
+    subtitle = subtitle,
+    x = "Année",
+    y = "Abondance relative",
+    color = "Observatoire",
+    fill = "Observatoire"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+    legend.text = element_text(size = 14),
+    axis.text = element_text(size = 14),
+    axis.title = element_text(size = 18),
+    title = element_text(size = 15),
+    panel.grid.minor = element_blank(),
+    legend.position = "top",
+    legend.justification = "left",
+    # IMPORTANT : forcer l'interprétation HTML/Markdown du sous-titre
+    plot.subtitle = ggtext::element_markdown(size = 13, lineheight = 1.1)
+  )
 
-# simplifié 
-
-plot_verdier_ODJ_STOC_2 = ggplot() +
-                          geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
-                          # ODJ
-                          geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
-                                             alpha = 1, linewidth = 1.5, color = "black") +
-                          annotate(geom = "text", label = "*", color = "black", size = 5, 
-                                   x = xSignLT-0.25, y = ySignLT) +
-                          annotate(geom = "text", label = paste0(dataLT_sp$perc, "%"), color = "darkgrey", size = 5,
-                                   x = xGrLT+0.25, y = yGrLT) +
-                          # STOC
-                          geom_line(data = dataPlot_STOC[dataPlot_STOC$group == "LT",], aes(x = year, y = estimate),
-                                             alpha = 1, linewidth = 1.5, color = "darkgreen") +
-                          annotate(geom = "text", label = "***", color = "darkgreen", size = 5, 
-                                   x = xSignLT_STOC-0.25, y = ySignLT_STOC) +
-                          annotate(geom = "text", label = paste0(dataLT_sp_STOC$perc, "%"), color = "darkgreen", size = 5,
-                                   x = xGrLT_STOC+0.25, y = yGrLT_STOC) +
-                          ggtitle(sp) +
-                          scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
-                          scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.15), limits = c(0.7, 1.4)) +
-                          theme_trends(base_size = 12, color = NA) +
-                          labs(
-                            title = "Verdier d'Europe",
-                            x = "Année",
-                            y = "Abondance relative",
-                            color = "Observatoire",
-                            fill = "Observatoire"
-                          ) + 
-                          theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-                                         legend.text = element_text(size = 14),
-                                         axis.text = element_text(size = 14),
-                                         axis.title = element_text(size = 18),
-                                         title = element_text(size = 15),
-                                         panel.grid.minor = element_blank(),
-                                         legend.position = "top",
-                                         legend.justification = "left") ; plot_verdier_ODJ_STOC_2 
-
+plot_verdier_ODJ_STOC
 ```
 
 ### Sittelle torchepot
@@ -587,7 +652,7 @@ différence pour hiver avec explications
 
 #### ODJ-STOC
 
-Tendance similaire
+Tendance equivalent
 
 ```{r}
 #| echo: false
@@ -845,7 +910,7 @@ plot_grosbec_ODJ_STOC = ggplot() +
 #### ODJ-STOC
 
 
-tendances similaires été et hiver
+tendances equivalents été et hiver
 
 ```{r}
 #| echo: false
@@ -969,7 +1034,7 @@ plot_rougegorge_ODJ_STOC = ggplot() +
 
 #### ODJ-STOC
 
-tendances similaires
+tendances equivalents
 
 ```{r}
 #| echo: false
@@ -1093,7 +1158,7 @@ plot_mesange_ODJ_STOC = ggplot() +
 
 #### ODJ-STOC
 
-tendances similaires
+tendances equivalents
 
 ```{r}
 #| echo: false
