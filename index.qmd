@@ -410,292 +410,28 @@ Bien mettre en avant que le pourcentage d’opposé est plus faible que le simil
 
 *ATTENTION : penser à bien revérifier les tendances du STOC et SHOC qui seront publiées dans le rapport qui sortira à l’automne*
 
-### Verdier d’Europe
-
 ```{r}
 #| include: false
 dataLongTerm <- read.csv("1) data/longTermTrends_esp_BILAN2025.txt", comment.char="#")
 
 dataLongTerm$species <- dataLongTerm$french_name
+
+STOCdataLongTerm <- read.csv("1) data/STOC_longTermTrends_esp_BILAN2025.txt", comment.char="#")
+
+STOCdataLongTerm$species <- STOCdataLongTerm$french_name
 ```
 
+### Verdier d’Europe
 
 #### ODJ-STOC
-
-Tendance similaire
-
-```{r}
-#| echo: false
-
-verdier_ODJ_STOC_dt <- comparaison_ODJ_STOC %>% 
-  filter(species == "Verdier d'Europe") %>% 
-  select(species, Protocole, minYear, maxYear, estimate, pval, infIC, supIC, perc, infPerc, supPerc, tendance_bilan)
-```
-
-```{r}
-#| echo: false
-#| warning: false
-#| fig-height: 5
-#| fig-width: 8
-
-verdier_info_ODJ_STOC <- data.frame(
-  slope = verdier_ODJ_STOC_dt$estimate,
-  intercept = - verdier_ODJ_STOC_dt$estimate * ((2012 + 2025) / 2),
-  infIC = verdier_ODJ_STOC_dt$infIC,
-  supIC = verdier_ODJ_STOC_dt$supIC,
-  line = c("ODJ", "STOC")
-)
-
-verdier_info_ODJ_STOC_plot <- verdier_info_ODJ_STOC %>%
-  mutate(
-    slope_min = infIC, 
-    slope_max = supIC
-  ) %>%
-  tidyr::expand_grid(x = seq(2012, 2025, by = 0.1)) %>% 
-  mutate(
-    y_min = intercept + slope_min * x,
-    y_max = intercept + slope_max * x
-  )
-
-# library(cowplot)
-# 
-# flocon <- png::readPNG("flocon-de-neige.png")  # mettre ton fichier logo
-# flocon_grob <- grid::rasterGrob(flocon, interpolate = TRUE)
-
-subtitle_verdier <- paste0("ODJ : ", verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="ODJ"], 
-                           " [ ", verdier_ODJ_STOC_dt$infPerc[verdier_ODJ_STOC_dt$Protocole=="ODJ"], "; ",
-                           verdier_ODJ_STOC_dt$supPerc[verdier_ODJ_STOC_dt$Protocole=="ODJ"], "]", 
-                           "\nSTOC : ", verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="STOC"], 
-                           " [ ", verdier_ODJ_STOC_dt$infPerc[verdier_ODJ_STOC_dt$Protocole=="STOC"], "; ",
-                           verdier_ODJ_STOC_dt$supPerc[verdier_ODJ_STOC_dt$Protocole=="STOC"], "]")
-
-verdier_ODJ_STOC_plot <- ggplot(verdier_info_ODJ_STOC_plot, aes(color = line, fill = line)) +
-  geom_ribbon(aes(x = x, ymin = y_min, ymax = y_max, fill = line), alpha = 0.2, color = "white") +
-  geom_abline(aes(slope = slope, intercept = intercept, color = line), size = 2) +
-  annotate("text", x = 6, y = 45, 
-           label = "Janvier +24% [ +19% ; +30% ]", 
-           hjust = 0, size = 5, fontface = "bold") +
-  theme_trends(base_size = 12, color = NA) +
-  scale_color_manual(values = c("darkgrey", "darkgreen")) +
-  scale_fill_manual(values = c("darkgrey", "darkgreen")) + 
-  scale_x_continuous(limits = c(2012, 2025), breaks = 2012:2025) +
-  scale_y_continuous(limits = c(min(verdier_info_ODJ_STOC_plot$y_min), 
-                                max(verdier_info_ODJ_STOC_plot$y_max)), 
-                     breaks = seq(round(min(verdier_info_ODJ_STOC_plot$y_min)), 
-                                  round(max(verdier_info_ODJ_STOC_plot$y_max)), by = 15)) +
-  labs(x = "Année", y = "Effectifs relatifs", color = "", fill = "",
-       title = "Verdier d'Europe",
-       subtitle = subtitle_verdier) +
-  theme(legend.position = "bottom") ; verdier_ODJ_STOC_plot
-
-
-# verdier_ODJ_STOC_plot_2 <- ggdraw(verdier_ODJ_STOC_plot) + 
-#   draw_grob(flocon_grob, x = 0.11, y = 0.8, width = 0.07, height = 0.07) ; verdier_ODJ_STOC_plot_2
-
-
-
-verdier_ODJ_STOC_dt
-
-# remove "%"
-verdier_ODJ_STOC_dt[] <- lapply(verdier_ODJ_STOC_dt, gsub, pattern='%', replacement='')
-verdier_ODJ_STOC_dt
-
-
-
-# perc_verdier_ODJ_dt <- data.frame(
-#   procole = "ODJ",
-#   year = 2012:2025,
-#   population = seq(100, 100 * (1 - verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="ODJ"]), 
-#                    length.out = length(years)),
-#   ymin = seq(100, 100 * (1 - verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="ODJ"]), length.out = length(years)) + 
-#     (100 * (1 - verdier_ODJ_STOC_dt$infPerc[verdier_ODJ_STOC_dt$Protocole=="ODJ"])) - 
-#     (100 * (1 - verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="ODJ"])),
-#   ymax = seq(100, 100 * (1 - verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="ODJ"]), length.out = length(years)) + 
-#     (100 * (1 - verdier_ODJ_STOC_dt$supPerc[verdier_ODJ_STOC_dt$Protocole=="ODJ"])) - 
-#     (100 * (1 - verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="ODJ"]))
-#   )
-
-# Années de 2012 à 2025
-years <- 2012:2025
-
-# # Valeur centrale (chute -22.6%)
-# pop_central_ODJ <- seq(100, 100 * (1 - verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="ODJ"]), length.out = length(years))
-# pop_central_STOC <- seq(100, 100 * (1 - verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="STOC"]), length.out = length(years))
-# 
-# # Écarts fixes entre estimation centrale et IC en 2025
-# ecart_bas_ODJ <- (100 * (1 - verdier_ODJ_STOC_dt$infPerc[verdier_ODJ_STOC_dt$Protocole=="ODJ"])) - (100 * (1 - verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="ODJ"]))
-# ecart_haut_ODJ <- (100 * (1 - verdier_ODJ_STOC_dt$supPerc[verdier_ODJ_STOC_dt$Protocole=="ODJ"])) - (100 * (1 - verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="ODJ"]))
-# 
-# ecart_bas_STOC <- (100 * (1 - verdier_ODJ_STOC_dt$infPerc[verdier_ODJ_STOC_dt$Protocole=="STOC"])) - (100 * (1 - verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="ODJ"]))
-# ecart_haut_STOC <- (100 * (1 - verdier_ODJ_STOC_dt$supPerc[verdier_ODJ_STOC_dt$Protocole=="STOC"])) - (100 * (1 - verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="ODJ"]))
-
-# # IC appliqué de manière constante
-# pop_min <- pop_central + ecart_bas
-# pop_max <- pop_central + ecart_haut
-# 
-# # Jeu de données complet
-# dt <- data.frame(
-#   year = years,
-#   population = pop_central,
-#   ymin = pop_min,
-#   ymax = pop_max
-# )
-
-# # Graphique
-# ggplot(dt, aes(x = year, y = population)) +
-#   geom_ribbon(aes(ymin = ymin, ymax = ymax), fill = "darkgrey", alpha = 0.2) +
-#   geom_line(color = "darkgrey", size = 1.2) +
-#   scale_x_continuous(breaks = c(2012, 2015, 2020, 2025)) +
-#   labs(
-#     title = "Évolution de la taille estimée pour le Verdier d'Europe",
-#     subtitle = "Déclin estimée : -22.6% [ -30.8% ; -13.5% ] entre 2012 et 2025",
-#     x = "Année",
-#     y = "Population relativ (%)"
-#   ) +
-#   theme_minimal(base_size = 14)
-# 
-# 
-# 
-# 
-
-
-
-
-# Années de 2012 à 2025
-years <- 2012:2025
-
-### --- Protocole A ---
-verdier_ODJ_STOC_dt_ODJ_only <- verdier_ODJ_STOC_dt %>% filter(Protocole == "ODJ")
-verdier_ODJ_STOC_dt_ODJ_only$perc <- as.numeric(verdier_ODJ_STOC_dt_ODJ_only$perc)
-verdier_ODJ_STOC_dt_ODJ_only$supPerc <- as.numeric(verdier_ODJ_STOC_dt_ODJ_only$supPerc)
-verdier_ODJ_STOC_dt_ODJ_only$infPerc <- as.numeric(verdier_ODJ_STOC_dt_ODJ_only$infPerc)
-# tendance %
-pop_central_A <- seq(100, 100 * (verdier_ODJ_STOC_dt_ODJ_only$perc), length.out = length(years))
-ecart_bas_A   <- (100 * (verdier_ODJ_STOC_dt_ODJ_only$supPerc)) - (100 * (verdier_ODJ_STOC_dt_ODJ_only$perc))
-ecart_haut_A  <- (100 * (verdier_ODJ_STOC_dt_ODJ_only$infPerc)) - (100 * (verdier_ODJ_STOC_dt_ODJ_only$perc))
-pop_min_A     <- pop_central_A + ecart_bas_A
-pop_max_A     <- pop_central_A + ecart_haut_A
-
-dt_A <- data.frame(
-  year = years,
-  population = pop_central_A,
-  ymin = pop_min_A,
-  ymax = pop_max_A,
-  protocole = "ODJ"
-)
-
-### --- Protocole B ---
-verdier_ODJ_STOC_dt_STOC_only <- verdier_ODJ_STOC_dt %>% filter(Protocole == "STOC")
-verdier_ODJ_STOC_dt_STOC_only$perc <- as.numeric(verdier_ODJ_STOC_dt_STOC_only$perc)
-verdier_ODJ_STOC_dt_STOC_only$supPerc <- as.numeric(verdier_ODJ_STOC_dt_STOC_only$supPerc)
-verdier_ODJ_STOC_dt_STOC_only$infPerc <- as.numeric(verdier_ODJ_STOC_dt_STOC_only$infPerc)
-# tendance %
-pop_central_B <- seq(100, 100 * (1 + verdier_ODJ_STOC_dt_STOC_only$perc), length.out = length(years))
-ecart_bas_B   <- (100 * (1 + verdier_ODJ_STOC_dt_STOC_only$supPerc)) - (100 * (1 + verdier_ODJ_STOC_dt_STOC_only$perc))
-ecart_haut_B  <- (100 * (1 + verdier_ODJ_STOC_dt_STOC_only$infPerc)) - (100 * (1 + verdier_ODJ_STOC_dt_STOC_only$perc))
-pop_min_B     <- pop_central_B + ecart_bas_B
-pop_max_B     <- pop_central_B + ecart_haut_B
-
-dt_B <- data.frame(
-  year = years,
-  population = pop_central_B,
-  ymin = pop_min_B,
-  ymax = pop_max_B,
-  protocole = "STOC"
-)
-
-### --- Fusion des deux jeux ---
-dt <- bind_rows(dt_A, dt_B)
-
-### --- Subtitle ---
-
-subtitle_verdier <- paste0("ODJ : ", verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="ODJ"], 
-                           "% [ ", verdier_ODJ_STOC_dt$infPerc[verdier_ODJ_STOC_dt$Protocole=="ODJ"], "% ; ",
-                           verdier_ODJ_STOC_dt$supPerc[verdier_ODJ_STOC_dt$Protocole=="ODJ"], "%]", 
-                           "\nSTOC : ", verdier_ODJ_STOC_dt$perc[verdier_ODJ_STOC_dt$Protocole=="STOC"], 
-                           "% [ ", verdier_ODJ_STOC_dt$infPerc[verdier_ODJ_STOC_dt$Protocole=="STOC"], "% ; ",
-                           verdier_ODJ_STOC_dt$supPerc[verdier_ODJ_STOC_dt$Protocole=="STOC"], "%]")
-
-### --- Graphique ---
-verdier_perc_plot <- ggplot(dt, aes(x = year, y = population, color = protocole, fill = protocole)) +
-  geom_ribbon(aes(ymin = ymin, ymax = ymax), alpha = 0.2, color = NA) +
-  geom_line(size = 1.2) +
-  scale_color_manual(values = c("darkgrey", "darkgreen")) +
-  scale_fill_manual(values = c("darkgrey", "darkgreen")) + 
-  scale_x_continuous(limits = c(2012, 2025), breaks = 2012:2025) +
-  labs(
-    title = "Verdier d'Europe",
-    subtitle = subtitle_verdier,
-    x = "Année",
-    y = "Population (%)",
-    color = "Observatoire",
-    fill = "Observatoire"
-  ) +
-  theme_trends(base_size = 12, color = NA) ; verdier_perc_plot
-
-```
-
-#### ODJ-SHOC
-
-Tendance similaire
-
-```{r}
-#| echo: false
-
-verdier_ODJ_SHOC_dt <- comparaison_ODJ_SHOC %>% 
-  filter(species == "Verdier d'Europe") %>% 
-  select(species, minYear, maxYear, estimate, pval, infIC, supIC, tendance_bilan)
-
-```
-
-```{r}
-#| echo: false
-#| warning: false
-#| fig-height: 5
-#| fig-width: 8
-
-verdier_info_ODJ_SHOC <- data.frame(
-  slope = verdier_ODJ_SHOC_dt$estimate,
-  intercept = - verdier_ODJ_SHOC_dt$estimate * ((2012 + 2025) / 2),
-  infIC = verdier_ODJ_SHOC_dt$infIC,
-  supIC = verdier_ODJ_SHOC_dt$supIC,
-  line = c("ODJ", "SHOC")
-)
-
-verdier_info_ODJ_SHOC_plot <- verdier_info_ODJ_SHOC %>%
-  mutate(
-    slope_min = infIC, 
-    slope_max = supIC
-  ) %>%
-  tidyr::expand_grid(x = seq(2012, 2025, by = 0.1)) %>% 
-  mutate(
-    y_min = intercept + slope_min * x,
-    y_max = intercept + slope_max * x
-  )
-
-verdier_ODJ_SHOC_plot <- ggplot(verdier_info_ODJ_SHOC_plot, aes(color = line, fill = line)) +
-  geom_ribbon(aes(x = x, ymin = y_min, ymax = y_max, fill = line), alpha = 0.2, color = "white") +
-  geom_abline(aes(slope = slope, intercept = intercept, color = line), size = 2) +
-  theme_trends(base_size=12, color=NA) +
-  scale_color_manual(values = c("darkgrey", "darkblue")) +
-  scale_fill_manual(values = c("darkgrey", "darkblue")) + 
-  scale_x_continuous(limits = c(2012, 2025), breaks = 2012:2025) +
-  scale_y_continuous(limits = c(min(verdier_info_ODJ_SHOC_plot$y_min), 
-                                max(verdier_info_ODJ_SHOC_plot$y_max)), 
-                     breaks = seq(round(min(verdier_info_ODJ_SHOC_plot$y_min)), 
-                                  round(max(verdier_info_ODJ_SHOC_plot$y_max)), by = 15)) +
-  labs(x = "Année", y = "Effectifs relatifs", color = "Observatoire", fill = "Observatoire") +
-  theme(legend.position = "top") ; verdier_ODJ_SHOC_plot
-
-```
-
-#### V2 from routine
 
 ```{r}
 #| echo: false
 #| warning: false
 
 sp = "Verdier d'Europe"
+
+# ODJ --------------------------------------------------------------------------
 
 dataLT_sp = dataLongTerm[dataLongTerm$species == sp,]
 dataLT_sp <- dataLT_sp %>% dplyr::select(-trendEBCC)
@@ -727,40 +463,83 @@ grLT = round(grLT, 3)
 xGrLT = dataLT_sp$minYear - 1
 yGrLT = mean(dataPlot$estimate[dataPlot$year == min(dataPlot$year)])
 
+# STOC -------------------------------------------------------------------------
+
+dataLT_sp_STOC = STOCdataLongTerm[STOCdataLongTerm$species == sp,]
+dataLT_sp_STOC <- dataLT_sp_STOC %>% dplyr::select(-trendEBCC)
+dataLT_sp_STOC <- na.omit(dataLT_sp_STOC)
+
+yearValues_STOC = dataLT_sp_STOC$minYear:dataLT_sp_STOC$maxYear
+      
+estLT_STOC = dataLT_sp_STOC$estimate * (yearValues_STOC - min(yearValues_STOC))
+estLT_STOC = estLT_STOC - mean(estLT_STOC)
+
+dataPlot_STOC = data.frame(year = yearValues_STOC,
+                      estimate = exp(estLT_STOC),
+                      estimate_exp = exp(estLT_STOC), # modified
+                      infIC = NA,
+                      supIC = NA,
+                      group = "LT",
+                      rep = 1)
+
+yRef_STOC = 1 # yRef = ifelse(distribution == "gaussian", 0, 1)
+
+# --- significance ---
+signLT_STOC <- round(dataLT_sp_STOC$pval,16)
+xSignLT_STOC <- dataLT_sp_STOC$maxYear + 1 # x-position of the significance
+ySignLT_STOC <- mean(dataPlot_STOC$estimate[dataPlot_STOC$year == dataLT_sp_STOC$maxYear]) # y-position of the significance
+
+# --- growth rate ---
+grLT_STOC = dataLT_sp_STOC$estimate
+grLT_STOC = round(grLT_STOC, 3)
+xGrLT_STOC = dataLT_sp_STOC$minYear - 1
+yGrLT_STOC = mean(dataPlot_STOC$estimate[dataPlot_STOC$year == min(dataPlot_STOC$year)])
+
+# plot -------------------------------------------------------------------------
+
 subtitle <- paste0("ODJ : ", dataLT_sp$perc, 
                            "% [ ", dataLT_sp$infPerc, "% ; ",
                            dataLT_sp$supPerc, "%]", 
-                           "\nSTOC : ", dataLT_sp$perc, 
-                           "% [ ", dataLT_sp$infPerc, "% ; ",
-                           dataLT_sp$supPerc, "%]")
-# --- plot ---
+                           "\nSTOC : ", dataLT_sp_STOC$perc, 
+                           "% [ ", dataLT_sp_STOC$infPerc, "% ; ",
+                           dataLT_sp_STOC$supPerc, "%]")
 
-plot = ggplot() +
-  geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
-                     alpha = 1, linewidth = 1.1, color = "darkgrey") +
-  annotate(geom = "text", label = signLT, color = "gray", size = 5, x = xSignLT, y = ySignLT) +
-  annotate(geom = "text", label = grLT, color = "gray", size = 5, x = xGrLT, y = yGrLT) +
-  geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
-  ggtitle(sp) +
-  scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
-  scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
-  theme_trends(base_size = 12, color = NA) +
-  labs(
-    title = "Verdier d'Europe",
-    subtitle = subtitle,
-    x = "Année",
-    y = "Abondance relative",
-    color = "Observatoire",
-    fill = "Observatoire"
-  ) + 
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-                 legend.text = element_text(size = 14),
-                 axis.text = element_text(size = 14),
-                 axis.title = element_text(size = 18),
-                 title = element_text(size = 15),
-                 panel.grid.minor = element_blank(),
-                 legend.position = "top",
-                 legend.justification = "left") ; plot 
+plot_verdier_ODJ_STOC = ggplot() +
+                          geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
+                          # ODJ
+                          geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
+                                             alpha = 1, linewidth = 1.1, color = "darkgrey") +
+                          annotate(geom = "text", label = signLT, color = "darkgrey", size = 5, 
+                                   x = xSignLT, y = ySignLT) +
+                          annotate(geom = "text", label = grLT, color = "darkgrey", size = 5, 
+                                   x = xGrLT, y = yGrLT) +
+                          # STOC
+                          geom_line(data = dataPlot_STOC[dataPlot_STOC$group == "LT",], aes(x = year, y = estimate),
+                                             alpha = 1, linewidth = 1.1, color = "darkgreen") +
+                          annotate(geom = "text", label = signLT_STOC, color = "darkgreen", size = 5, 
+                                   x = xSignLT_STOC, y = ySignLT_STOC) +
+                          annotate(geom = "text", label = grLT_STOC, color = "darkgreen", size = 5, 
+                                   x = xGrLT_STOC, y = yGrLT_STOC) +
+                          ggtitle(sp) +
+                          scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
+                          scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
+                          theme_trends(base_size = 12, color = NA) +
+                          labs(
+                            title = "Verdier d'Europe",
+                            subtitle = subtitle,
+                            x = "Année",
+                            y = "Abondance relative",
+                            color = "Observatoire",
+                            fill = "Observatoire"
+                          ) + 
+                          theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+                                         legend.text = element_text(size = 14),
+                                         axis.text = element_text(size = 14),
+                                         axis.title = element_text(size = 18),
+                                         title = element_text(size = 15),
+                                         panel.grid.minor = element_blank(),
+                                         legend.position = "top",
+                                         legend.justification = "left") ; plot_verdier_ODJ_STOC 
 
 ```
 
@@ -784,103 +563,10 @@ sittelle_ODJ_STOC_dt <- comparaison_ODJ_STOC %>%
 ```{r}
 #| echo: false
 #| warning: false
-#| fig-height: 4
-#| fig-width: 8
-
-sittelle_info_ODJ_STOC <- data.frame(
-  slope = sittelle_ODJ_STOC_dt$estimate,
-  intercept = - sittelle_ODJ_STOC_dt$estimate * ((2012 + 2025) / 2),
-  infIC = sittelle_ODJ_STOC_dt$infIC,
-  supIC = sittelle_ODJ_STOC_dt$supIC,
-  line = c("ODJ", "STOC")
-)
-
-sittelle_info_ODJ_STOC_plot <- sittelle_info_ODJ_STOC %>%
-  mutate(
-    slope_min = infIC, 
-    slope_max = supIC
-  ) %>%
-  tidyr::expand_grid(x = seq(2012, 2025, by = 0.1)) %>% 
-  mutate(
-    y_min = intercept + slope_min * x,
-    y_max = intercept + slope_max * x
-  )
-
-sittelle_ODJ_STOC_plot <- ggplot(sittelle_info_ODJ_STOC_plot, aes(color = line, fill = line)) +
-  geom_ribbon(aes(x = x, ymin = y_min, ymax = y_max, fill = line), alpha = 0.2, color = "white") +
-  geom_abline(aes(slope = slope, intercept = intercept, color = line), size = 2) +
-  theme_trends(base_size=12, color=NA) +
-  scale_color_manual(values = c("darkgrey", "darkgreen")) +
-  scale_fill_manual(values = c("darkgrey", "darkgreen")) + 
-  scale_x_continuous(limits = c(2012, 2025), breaks = 2012:2025) +
-  scale_y_continuous(limits = c(min(sittelle_info_ODJ_STOC_plot$y_min), 
-                                max(sittelle_info_ODJ_STOC_plot$y_max)), 
-                     breaks = seq(round(min(sittelle_info_ODJ_STOC_plot$y_min)), 
-                                  round(max(sittelle_info_ODJ_STOC_plot$y_max)), by = 15)) +
-  labs(x = "Année", y = "Effectifs relatifs", color = "Observatoire", fill = "Observatoire") +
-  theme(legend.position = "top") ; sittelle_ODJ_STOC_plot
-
-```
-
-#### ODJ-SHOC
-
-Tendance similaire
-
-```{r}
-#| echo: false
-
-sittelle_ODJ_SHOC_dt <- comparaison_ODJ_SHOC %>% 
-  filter(species == "Sittelle torchepot") %>% 
-  select(species, minYear, maxYear, estimate, pval, infIC, supIC, tendance_bilan)
-
-```
-
-```{r}
-#| echo: false
-#| warning: false
-#| fig-height: 4
-#| fig-width: 8
-
-sittelle_info_ODJ_SHOC <- data.frame(
-  slope = sittelle_ODJ_SHOC_dt$estimate,
-  intercept = - sittelle_ODJ_SHOC_dt$estimate * ((2012 + 2025) / 2),
-  infIC = sittelle_ODJ_SHOC_dt$infIC,
-  supIC = sittelle_ODJ_SHOC_dt$supIC,
-  line = c("ODJ", "SHOC")
-)
-
-sittelle_info_ODJ_SHOC_plot <- sittelle_info_ODJ_SHOC %>%
-  mutate(
-    slope_min = infIC, 
-    slope_max = supIC
-  ) %>%
-  tidyr::expand_grid(x = seq(2012, 2025, by = 0.1)) %>% 
-  mutate(
-    y_min = intercept + slope_min * x,
-    y_max = intercept + slope_max * x
-  )
-
-sittelle_ODJ_SHOC_plot <- ggplot(sittelle_info_ODJ_SHOC_plot, aes(color = line, fill = line)) +
-  geom_ribbon(aes(x = x, ymin = y_min, ymax = y_max, fill = line), alpha = 0.2, color = "white") +
-  geom_abline(aes(slope = slope, intercept = intercept, color = line), size = 2) +
-  theme_trends(base_size=12, color=NA) +
-  scale_color_manual(values = c("darkgrey", "darkblue")) +
-  scale_fill_manual(values = c("darkgrey", "darkblue")) + 
-  scale_x_continuous(limits = c(2012, 2025), breaks = 2012:2025) +
-  scale_y_continuous(limits = c(min(sittelle_info_ODJ_SHOC_plot$y_min), 
-                                max(sittelle_info_ODJ_SHOC_plot$y_max)), 
-                     breaks = seq(round(min(sittelle_info_ODJ_SHOC_plot$y_min)), 
-                                  round(max(sittelle_info_ODJ_SHOC_plot$y_max)), by = 15)) +
-  labs(x = "Année", y = "Effectifs relatifs", color = "Observatoire", fill = "Observatoire") +
-  theme(legend.position = "top") ; sittelle_ODJ_SHOC_plot
-
-```
-
-```{r}
-#| echo: false
-#| warning: false
 
 sp = "Sittelle torchepot"
+
+# ODJ --------------------------------------------------------------------------
 
 dataLT_sp = dataLongTerm[dataLongTerm$species == sp,]
 dataLT_sp <- dataLT_sp %>% dplyr::select(-trendEBCC)
@@ -912,44 +598,89 @@ grLT = round(grLT, 3)
 xGrLT = dataLT_sp$minYear - 1
 yGrLT = mean(dataPlot$estimate[dataPlot$year == min(dataPlot$year)])
 
+# STOC -------------------------------------------------------------------------
+
+dataLT_sp_STOC = STOCdataLongTerm[STOCdataLongTerm$species == sp,]
+dataLT_sp_STOC <- dataLT_sp_STOC %>% dplyr::select(-trendEBCC)
+dataLT_sp_STOC <- na.omit(dataLT_sp_STOC)
+
+yearValues_STOC = dataLT_sp_STOC$minYear:dataLT_sp_STOC$maxYear
+      
+estLT_STOC = dataLT_sp_STOC$estimate * (yearValues_STOC - min(yearValues_STOC))
+estLT_STOC = estLT_STOC - mean(estLT_STOC)
+
+dataPlot_STOC = data.frame(year = yearValues_STOC,
+                      estimate = exp(estLT_STOC),
+                      estimate_exp = exp(estLT_STOC), # modified
+                      infIC = NA,
+                      supIC = NA,
+                      group = "LT",
+                      rep = 1)
+
+yRef_STOC = 1 # yRef = ifelse(distribution == "gaussian", 0, 1)
+
+# --- significance ---
+signLT_STOC <- round(dataLT_sp_STOC$pval,3)
+xSignLT_STOC <- dataLT_sp_STOC$maxYear + 1 # x-position of the significance
+ySignLT_STOC <- mean(dataPlot_STOC$estimate[dataPlot_STOC$year == dataLT_sp_STOC$maxYear]) # y-position of the significance
+
+# --- growth rate ---
+grLT_STOC = dataLT_sp_STOC$estimate
+grLT_STOC = round(grLT_STOC, 3)
+xGrLT_STOC = dataLT_sp_STOC$minYear - 1
+yGrLT_STOC = mean(dataPlot_STOC$estimate[dataPlot_STOC$year == min(dataPlot_STOC$year)])
+
+# plot -------------------------------------------------------------------------
+
 subtitle <- paste0("ODJ : ", dataLT_sp$perc, 
                            "% [ ", dataLT_sp$infPerc, "% ; ",
                            dataLT_sp$supPerc, "%]", 
-                           "\nSTOC : ", dataLT_sp$perc, 
-                           "% [ ", dataLT_sp$infPerc, "% ; ",
-                           dataLT_sp$supPerc, "%]")
-# --- plot ---
+                           "\nSTOC : ", dataLT_sp_STOC$perc, 
+                           "% [ ", dataLT_sp_STOC$infPerc, "% ; ",
+                           dataLT_sp_STOC$supPerc, "%]")
 
-plot = ggplot() +
-  geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
-                     alpha = 1, linewidth = 1.1, color = "darkgrey") +
-  annotate(geom = "text", label = signLT, color = "gray", size = 5, x = xSignLT, y = ySignLT) +
-  annotate(geom = "text", label = grLT, color = "gray", size = 5, x = xGrLT, y = yGrLT) +
-  geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
-  ggtitle(sp) +
-  scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
-  scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
-  theme_trends(base_size = 12, color = NA) +
-  labs(
-    title = sp,
-    subtitle = subtitle,
-    x = "Année",
-    y = "Abondance relative",
-    color = "Observatoire",
-    fill = "Observatoire"
-  ) + 
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-                 legend.text = element_text(size = 14),
-                 axis.text = element_text(size = 14),
-                 axis.title = element_text(size = 18),
-                 title = element_text(size = 15),
-                 panel.grid.minor = element_blank(),
-                 legend.position = "top",
-                 legend.justification = "left") ; plot 
+plot_sittelle_ODJ_STOC = ggplot() +
+                          geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
+                          # ODJ
+                          geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
+                                             alpha = 1, linewidth = 1.1, color = "darkgrey") +
+                          annotate(geom = "text", label = signLT, color = "darkgrey", size = 5, 
+                                   x = xSignLT, y = ySignLT) +
+                          annotate(geom = "text", label = grLT, color = "darkgrey", size = 5, 
+                                   x = xGrLT, y = yGrLT) +
+                          # STOC
+                          geom_line(data = dataPlot_STOC[dataPlot_STOC$group == "LT",], aes(x = year, y = estimate),
+                                             alpha = 1, linewidth = 1.1, color = "darkgreen") +
+                          annotate(geom = "text", label = signLT_STOC, color = "darkgreen", size = 5, 
+                                   x = xSignLT_STOC, y = ySignLT_STOC) +
+                          annotate(geom = "text", label = grLT_STOC, color = "darkgreen", size = 5, 
+                                   x = xGrLT_STOC, y = yGrLT_STOC) +
+                          ggtitle(sp) +
+                          scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
+                          scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
+                          theme_trends(base_size = 12, color = NA) +
+                          labs(
+                            title = "Sittelle torchepot",
+                            subtitle = subtitle,
+                            x = "Année",
+                            y = "Abondance relative",
+                            color = "Observatoire",
+                            fill = "Observatoire"
+                          ) + 
+                          theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+                                         legend.text = element_text(size = 14),
+                                         axis.text = element_text(size = 14),
+                                         axis.title = element_text(size = 18),
+                                         title = element_text(size = 15),
+                                         panel.grid.minor = element_blank(),
+                                         legend.position = "top",
+                                         legend.justification = "left") ; plot_sittelle_ODJ_STOC 
 
 ```
 
 ### Grosbec casse-noyaux
+
+#### ODJ-STOC
 
 tendances opposées
 
@@ -958,6 +689,8 @@ tendances opposées
 #| warning: false
 
 sp = "Grosbec casse-noyaux"
+
+# ODJ --------------------------------------------------------------------------
 
 dataLT_sp = dataLongTerm[dataLongTerm$species == sp,]
 dataLT_sp <- dataLT_sp %>% dplyr::select(-trendEBCC)
@@ -979,7 +712,7 @@ dataPlot = data.frame(year = yearValues,
 yRef = 1 # yRef = ifelse(distribution == "gaussian", 0, 1)
 
 # --- significance ---
-signLT <- round(dataLT_sp$pval,6)
+signLT <- round(dataLT_sp$pval,3)
 xSignLT <- dataLT_sp$maxYear + 1 # x-position of the significance
 ySignLT <- mean(dataPlot$estimate[dataPlot$year == dataLT_sp$maxYear]) # y-position of the significance
 
@@ -989,44 +722,90 @@ grLT = round(grLT, 3)
 xGrLT = dataLT_sp$minYear - 1
 yGrLT = mean(dataPlot$estimate[dataPlot$year == min(dataPlot$year)])
 
+# STOC -------------------------------------------------------------------------
+
+dataLT_sp_STOC = STOCdataLongTerm[STOCdataLongTerm$species == sp,]
+dataLT_sp_STOC <- dataLT_sp_STOC %>% dplyr::select(-trendEBCC)
+dataLT_sp_STOC <- na.omit(dataLT_sp_STOC)
+
+yearValues_STOC = dataLT_sp_STOC$minYear:dataLT_sp_STOC$maxYear
+      
+estLT_STOC = dataLT_sp_STOC$estimate * (yearValues_STOC - min(yearValues_STOC))
+estLT_STOC = estLT_STOC - mean(estLT_STOC)
+
+dataPlot_STOC = data.frame(year = yearValues_STOC,
+                      estimate = exp(estLT_STOC),
+                      estimate_exp = exp(estLT_STOC), # modified
+                      infIC = NA,
+                      supIC = NA,
+                      group = "LT",
+                      rep = 1)
+
+yRef_STOC = 1 # yRef = ifelse(distribution == "gaussian", 0, 1)
+
+# --- significance ---
+signLT_STOC <- round(dataLT_sp_STOC$pval,3)
+xSignLT_STOC <- dataLT_sp_STOC$maxYear + 1 # x-position of the significance
+ySignLT_STOC <- mean(dataPlot_STOC$estimate[dataPlot_STOC$year == dataLT_sp_STOC$maxYear]) # y-position of the significance
+
+# --- growth rate ---
+grLT_STOC = dataLT_sp_STOC$estimate
+grLT_STOC = round(grLT_STOC, 5)
+xGrLT_STOC = dataLT_sp_STOC$minYear - 1
+yGrLT_STOC = mean(dataPlot_STOC$estimate[dataPlot_STOC$year == min(dataPlot_STOC$year)])
+
+# plot -------------------------------------------------------------------------
+
 subtitle <- paste0("ODJ : ", dataLT_sp$perc, 
                            "% [ ", dataLT_sp$infPerc, "% ; ",
                            dataLT_sp$supPerc, "%]", 
-                           "\nSTOC : ", dataLT_sp$perc, 
-                           "% [ ", dataLT_sp$infPerc, "% ; ",
-                           dataLT_sp$supPerc, "%]")
-# --- plot ---
+                           "\nSTOC : ", dataLT_sp_STOC$perc, 
+                           "% [ ", dataLT_sp_STOC$infPerc, "% ; ",
+                           dataLT_sp_STOC$supPerc, "%]")
 
-plot = ggplot() +
-  geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
-                     alpha = 1, linewidth = 1.1, color = "darkgrey") +
-  annotate(geom = "text", label = signLT, color = "gray", size = 5, x = xSignLT, y = ySignLT) +
-  annotate(geom = "text", label = grLT, color = "gray", size = 5, x = xGrLT, y = yGrLT) +
-  geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
-  ggtitle(sp) +
-  scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
-  scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
-  theme_trends(base_size = 12, color = NA) +
-  labs(
-    title = "Verdier d'Europe",
-    subtitle = subtitle,
-    x = "Année",
-    y = "Abondance relative",
-    color = "Observatoire",
-    fill = "Observatoire"
-  ) + 
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-                 legend.text = element_text(size = 14),
-                 axis.text = element_text(size = 14),
-                 axis.title = element_text(size = 18),
-                 title = element_text(size = 15),
-                 panel.grid.minor = element_blank(),
-                 legend.position = "top",
-                 legend.justification = "left") ; plot 
+plot_grosbec_ODJ_STOC = ggplot() +
+                          geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
+                          # ODJ
+                          geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
+                                             alpha = 1, linewidth = 1.1, color = "darkgrey") +
+                          annotate(geom = "text", label = signLT, color = "darkgrey", size = 5, 
+                                   x = xSignLT, y = ySignLT) +
+                          annotate(geom = "text", label = grLT, color = "darkgrey", size = 5, 
+                                   x = xGrLT, y = yGrLT) +
+                          # STOC
+                          geom_line(data = dataPlot_STOC[dataPlot_STOC$group == "LT",], aes(x = year, y = estimate),
+                                             alpha = 1, linewidth = 1.1, color = "darkgreen") +
+                          annotate(geom = "text", label = signLT_STOC, color = "darkgreen", size = 5, 
+                                   x = xSignLT_STOC, y = ySignLT_STOC) +
+                          annotate(geom = "text", label = grLT_STOC, color = "darkgreen", size = 5, 
+                                   x = xGrLT_STOC, y = yGrLT_STOC) +
+                          ggtitle(sp) +
+                          scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
+                          scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
+                          theme_trends(base_size = 12, color = NA) +
+                          labs(
+                            title = "Grosbec casse-noyaux",
+                            subtitle = subtitle,
+                            x = "Année",
+                            y = "Abondance relative",
+                            color = "Observatoire",
+                            fill = "Observatoire"
+                          ) + 
+                          theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+                                         legend.text = element_text(size = 14),
+                                         axis.text = element_text(size = 14),
+                                         axis.title = element_text(size = 18),
+                                         title = element_text(size = 15),
+                                         panel.grid.minor = element_blank(),
+                                         legend.position = "top",
+                                         legend.justification = "left") ; plot_grosbec_ODJ_STOC 
 
 ```
 
 ### Rougegorge
+
+#### ODJ-STOC
+
 
 tendances similaires été et hiver
 
@@ -1035,6 +814,8 @@ tendances similaires été et hiver
 #| warning: false
 
 sp = "Rougegorge familier"
+
+# ODJ --------------------------------------------------------------------------
 
 dataLT_sp = dataLongTerm[dataLongTerm$species == sp,]
 dataLT_sp <- dataLT_sp %>% dplyr::select(-trendEBCC)
@@ -1066,44 +847,89 @@ grLT = round(grLT, 3)
 xGrLT = dataLT_sp$minYear - 1
 yGrLT = mean(dataPlot$estimate[dataPlot$year == min(dataPlot$year)])
 
+# STOC -------------------------------------------------------------------------
+
+dataLT_sp_STOC = STOCdataLongTerm[STOCdataLongTerm$species == sp,]
+dataLT_sp_STOC <- dataLT_sp_STOC %>% dplyr::select(-trendEBCC)
+dataLT_sp_STOC <- na.omit(dataLT_sp_STOC)
+
+yearValues_STOC = dataLT_sp_STOC$minYear:dataLT_sp_STOC$maxYear
+      
+estLT_STOC = dataLT_sp_STOC$estimate * (yearValues_STOC - min(yearValues_STOC))
+estLT_STOC = estLT_STOC - mean(estLT_STOC)
+
+dataPlot_STOC = data.frame(year = yearValues_STOC,
+                      estimate = exp(estLT_STOC),
+                      estimate_exp = exp(estLT_STOC), # modified
+                      infIC = NA,
+                      supIC = NA,
+                      group = "LT",
+                      rep = 1)
+
+yRef_STOC = 1 # yRef = ifelse(distribution == "gaussian", 0, 1)
+
+# --- significance ---
+signLT_STOC <- round(dataLT_sp_STOC$pval,58)
+xSignLT_STOC <- dataLT_sp_STOC$maxYear + 1 # x-position of the significance
+ySignLT_STOC <- mean(dataPlot_STOC$estimate[dataPlot_STOC$year == dataLT_sp_STOC$maxYear]) # y-position of the significance
+
+# --- growth rate ---
+grLT_STOC = dataLT_sp_STOC$estimate
+grLT_STOC = round(grLT_STOC, 3)
+xGrLT_STOC = dataLT_sp_STOC$minYear - 1
+yGrLT_STOC = mean(dataPlot_STOC$estimate[dataPlot_STOC$year == min(dataPlot_STOC$year)])
+
+# plot -------------------------------------------------------------------------
+
 subtitle <- paste0("ODJ : ", dataLT_sp$perc, 
                            "% [ ", dataLT_sp$infPerc, "% ; ",
                            dataLT_sp$supPerc, "%]", 
-                           "\nSTOC : ", dataLT_sp$perc, 
-                           "% [ ", dataLT_sp$infPerc, "% ; ",
-                           dataLT_sp$supPerc, "%]")
-# --- plot ---
+                           "\nSTOC : ", dataLT_sp_STOC$perc, 
+                           "% [ ", dataLT_sp_STOC$infPerc, "% ; ",
+                           dataLT_sp_STOC$supPerc, "%]")
 
-plot = ggplot() +
-  geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
-                     alpha = 1, linewidth = 1.1, color = "darkgrey") +
-  annotate(geom = "text", label = signLT, color = "gray", size = 5, x = xSignLT, y = ySignLT) +
-  annotate(geom = "text", label = grLT, color = "gray", size = 5, x = xGrLT, y = yGrLT) +
-  geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
-  ggtitle(sp) +
-  scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
-  scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
-  theme_trends(base_size = 12, color = NA) +
-  labs(
-    title = "Rougegorge familier",
-    subtitle = subtitle,
-    x = "Année",
-    y = "Abondance relative",
-    color = "Observatoire",
-    fill = "Observatoire"
-  ) + 
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-                 legend.text = element_text(size = 14),
-                 axis.text = element_text(size = 14),
-                 axis.title = element_text(size = 18),
-                 title = element_text(size = 15),
-                 panel.grid.minor = element_blank(),
-                 legend.position = "top",
-                 legend.justification = "left") ; plot 
+plot_rougegorge_ODJ_STOC = ggplot() +
+                          geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
+                          # ODJ
+                          geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
+                                             alpha = 1, linewidth = 1.1, color = "darkgrey") +
+                          annotate(geom = "text", label = signLT, color = "darkgrey", size = 5, 
+                                   x = xSignLT, y = ySignLT) +
+                          annotate(geom = "text", label = grLT, color = "darkgrey", size = 5, 
+                                   x = xGrLT, y = yGrLT) +
+                          # STOC
+                          geom_line(data = dataPlot_STOC[dataPlot_STOC$group == "LT",], aes(x = year, y = estimate),
+                                             alpha = 1, linewidth = 1.1, color = "darkgreen") +
+                          annotate(geom = "text", label = signLT_STOC, color = "darkgreen", size = 5, 
+                                   x = xSignLT_STOC, y = ySignLT_STOC) +
+                          annotate(geom = "text", label = grLT_STOC, color = "darkgreen", size = 5, 
+                                   x = xGrLT_STOC, y = yGrLT_STOC) +
+                          ggtitle(sp) +
+                          scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
+                          scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
+                          theme_trends(base_size = 12, color = NA) +
+                          labs(
+                            title = "Rougegorge familier",
+                            subtitle = subtitle,
+                            x = "Année",
+                            y = "Abondance relative",
+                            color = "Observatoire",
+                            fill = "Observatoire"
+                          ) + 
+                          theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+                                         legend.text = element_text(size = 14),
+                                         axis.text = element_text(size = 14),
+                                         axis.title = element_text(size = 18),
+                                         title = element_text(size = 15),
+                                         panel.grid.minor = element_blank(),
+                                         legend.position = "top",
+                                         legend.justification = "left") ; plot_rougegorge_ODJ_STOC 
 
 ```
 
 ### Mésange bleue
+
+#### ODJ-STOC
 
 tendances similaires
 
@@ -1113,6 +939,8 @@ tendances similaires
 
 sp = "Mesange bleue"
 
+# ODJ --------------------------------------------------------------------------
+
 dataLT_sp = dataLongTerm[dataLongTerm$species == sp,]
 dataLT_sp <- dataLT_sp %>% dplyr::select(-trendEBCC)
 dataLT_sp <- na.omit(dataLT_sp)
@@ -1143,44 +971,89 @@ grLT = round(grLT, 3)
 xGrLT = dataLT_sp$minYear - 1
 yGrLT = mean(dataPlot$estimate[dataPlot$year == min(dataPlot$year)])
 
+# STOC -------------------------------------------------------------------------
+
+dataLT_sp_STOC = STOCdataLongTerm[STOCdataLongTerm$species == sp,]
+dataLT_sp_STOC <- dataLT_sp_STOC %>% dplyr::select(-trendEBCC)
+dataLT_sp_STOC <- na.omit(dataLT_sp_STOC)
+
+yearValues_STOC = dataLT_sp_STOC$minYear:dataLT_sp_STOC$maxYear
+      
+estLT_STOC = dataLT_sp_STOC$estimate * (yearValues_STOC - min(yearValues_STOC))
+estLT_STOC = estLT_STOC - mean(estLT_STOC)
+
+dataPlot_STOC = data.frame(year = yearValues_STOC,
+                      estimate = exp(estLT_STOC),
+                      estimate_exp = exp(estLT_STOC), # modified
+                      infIC = NA,
+                      supIC = NA,
+                      group = "LT",
+                      rep = 1)
+
+yRef_STOC = 1 # yRef = ifelse(distribution == "gaussian", 0, 1)
+
+# --- significance ---
+signLT_STOC <- round(dataLT_sp_STOC$pval,4)
+xSignLT_STOC <- dataLT_sp_STOC$maxYear + 1 # x-position of the significance
+ySignLT_STOC <- mean(dataPlot_STOC$estimate[dataPlot_STOC$year == dataLT_sp_STOC$maxYear]) # y-position of the significance
+
+# --- growth rate ---
+grLT_STOC = dataLT_sp_STOC$estimate
+grLT_STOC = round(grLT_STOC, 3)
+xGrLT_STOC = dataLT_sp_STOC$minYear - 1
+yGrLT_STOC = mean(dataPlot_STOC$estimate[dataPlot_STOC$year == min(dataPlot_STOC$year)])
+
+# plot -------------------------------------------------------------------------
+
 subtitle <- paste0("ODJ : ", dataLT_sp$perc, 
                            "% [ ", dataLT_sp$infPerc, "% ; ",
                            dataLT_sp$supPerc, "%]", 
-                           "\nSTOC : ", dataLT_sp$perc, 
-                           "% [ ", dataLT_sp$infPerc, "% ; ",
-                           dataLT_sp$supPerc, "%]")
-# --- plot ---
+                           "\nSTOC : ", dataLT_sp_STOC$perc, 
+                           "% [ ", dataLT_sp_STOC$infPerc, "% ; ",
+                           dataLT_sp_STOC$supPerc, "%]")
 
-plot = ggplot() +
-  geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
-                     alpha = 1, linewidth = 1.1, color = "darkgrey") +
-  annotate(geom = "text", label = signLT, color = "gray", size = 5, x = xSignLT, y = ySignLT) +
-  annotate(geom = "text", label = grLT, color = "gray", size = 5, x = xGrLT, y = yGrLT) +
-  geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
-  ggtitle(sp) +
-  scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
-  scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
-  theme_trends(base_size = 12, color = NA) +
-  labs(
-    title = sp,
-    subtitle = subtitle,
-    x = "Année",
-    y = "Abondance relative",
-    color = "Observatoire",
-    fill = "Observatoire"
-  ) + 
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-                 legend.text = element_text(size = 14),
-                 axis.text = element_text(size = 14),
-                 axis.title = element_text(size = 18),
-                 title = element_text(size = 15),
-                 panel.grid.minor = element_blank(),
-                 legend.position = "top",
-                 legend.justification = "left") ; plot 
+plot_mesange_ODJ_STOC = ggplot() +
+                          geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
+                          # ODJ
+                          geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
+                                             alpha = 1, linewidth = 1.1, color = "darkgrey") +
+                          annotate(geom = "text", label = signLT, color = "darkgrey", size = 5, 
+                                   x = xSignLT, y = ySignLT) +
+                          annotate(geom = "text", label = grLT, color = "darkgrey", size = 5, 
+                                   x = xGrLT, y = yGrLT) +
+                          # STOC
+                          geom_line(data = dataPlot_STOC[dataPlot_STOC$group == "LT",], aes(x = year, y = estimate),
+                                             alpha = 1, linewidth = 1.1, color = "darkgreen") +
+                          annotate(geom = "text", label = signLT_STOC, color = "darkgreen", size = 5, 
+                                   x = xSignLT_STOC, y = ySignLT_STOC) +
+                          annotate(geom = "text", label = grLT_STOC, color = "darkgreen", size = 5, 
+                                   x = xGrLT_STOC, y = yGrLT_STOC) +
+                          ggtitle(sp) +
+                          scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
+                          scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
+                          theme_trends(base_size = 12, color = NA) +
+                          labs(
+                            title = "Mésange bleue",
+                            subtitle = subtitle,
+                            x = "Année",
+                            y = "Abondance relative",
+                            color = "Observatoire",
+                            fill = "Observatoire"
+                          ) + 
+                          theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+                                         legend.text = element_text(size = 14),
+                                         axis.text = element_text(size = 14),
+                                         axis.title = element_text(size = 18),
+                                         title = element_text(size = 15),
+                                         panel.grid.minor = element_blank(),
+                                         legend.position = "top",
+                                         legend.justification = "left") ; plot_mesange_ODJ_STOC 
 
 ```
 
 ### Pinson des arbres
+
+#### ODJ-STOC
 
 tendances similaires
 
@@ -1190,6 +1063,8 @@ tendances similaires
 
 sp = "Pinson des arbres"
 
+# ODJ --------------------------------------------------------------------------
+
 dataLT_sp = dataLongTerm[dataLongTerm$species == sp,]
 dataLT_sp <- dataLT_sp %>% dplyr::select(-trendEBCC)
 dataLT_sp <- na.omit(dataLT_sp)
@@ -1220,39 +1095,82 @@ grLT = round(grLT, 3)
 xGrLT = dataLT_sp$minYear - 1
 yGrLT = mean(dataPlot$estimate[dataPlot$year == min(dataPlot$year)])
 
+# STOC -------------------------------------------------------------------------
+
+dataLT_sp_STOC = STOCdataLongTerm[STOCdataLongTerm$species == sp,]
+dataLT_sp_STOC <- dataLT_sp_STOC %>% dplyr::select(-trendEBCC)
+dataLT_sp_STOC <- na.omit(dataLT_sp_STOC)
+
+yearValues_STOC = dataLT_sp_STOC$minYear:dataLT_sp_STOC$maxYear
+      
+estLT_STOC = dataLT_sp_STOC$estimate * (yearValues_STOC - min(yearValues_STOC))
+estLT_STOC = estLT_STOC - mean(estLT_STOC)
+
+dataPlot_STOC = data.frame(year = yearValues_STOC,
+                      estimate = exp(estLT_STOC),
+                      estimate_exp = exp(estLT_STOC), # modified
+                      infIC = NA,
+                      supIC = NA,
+                      group = "LT",
+                      rep = 1)
+
+yRef_STOC = 1 # yRef = ifelse(distribution == "gaussian", 0, 1)
+
+# --- significance ---
+signLT_STOC <- round(dataLT_sp_STOC$pval,3)
+xSignLT_STOC <- dataLT_sp_STOC$maxYear + 1 # x-position of the significance
+ySignLT_STOC <- mean(dataPlot_STOC$estimate[dataPlot_STOC$year == dataLT_sp_STOC$maxYear]) # y-position of the significance
+
+# --- growth rate ---
+grLT_STOC = dataLT_sp_STOC$estimate
+grLT_STOC = round(grLT_STOC, 3)
+xGrLT_STOC = dataLT_sp_STOC$minYear - 1
+yGrLT_STOC = mean(dataPlot_STOC$estimate[dataPlot_STOC$year == min(dataPlot_STOC$year)])
+
+# plot -------------------------------------------------------------------------
+
 subtitle <- paste0("ODJ : ", dataLT_sp$perc, 
                            "% [ ", dataLT_sp$infPerc, "% ; ",
                            dataLT_sp$supPerc, "%]", 
-                           "\nSTOC : ", dataLT_sp$perc, 
-                           "% [ ", dataLT_sp$infPerc, "% ; ",
-                           dataLT_sp$supPerc, "%]")
-# --- plot ---
+                           "\nSTOC : ", dataLT_sp_STOC$perc, 
+                           "% [ ", dataLT_sp_STOC$infPerc, "% ; ",
+                           dataLT_sp_STOC$supPerc, "%]")
 
-plot = ggplot() +
-  geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
-                     alpha = 1, linewidth = 1.1, color = "darkgrey") +
-  annotate(geom = "text", label = signLT, color = "gray", size = 5, x = xSignLT, y = ySignLT) +
-  annotate(geom = "text", label = grLT, color = "gray", size = 5, x = xGrLT, y = yGrLT) +
-  geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
-  ggtitle(sp) +
-  scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
-  scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
-  theme_trends(base_size = 12, color = NA) +
-  labs(
-    title = sp,
-    subtitle = subtitle,
-    x = "Année",
-    y = "Abondance relative",
-    color = "Observatoire",
-    fill = "Observatoire"
-  ) + 
-  theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
-                 legend.text = element_text(size = 14),
-                 axis.text = element_text(size = 14),
-                 axis.title = element_text(size = 18),
-                 title = element_text(size = 15),
-                 panel.grid.minor = element_blank(),
-                 legend.position = "top",
-                 legend.justification = "left") ; plot 
+plot_pinson_ODJ_STOC = ggplot() +
+                          geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
+                          # ODJ
+                          geom_line(data = dataPlot[dataPlot$group == "LT",], aes(x = year, y = estimate),
+                                             alpha = 1, linewidth = 1.1, color = "darkgrey") +
+                          annotate(geom = "text", label = signLT, color = "darkgrey", size = 5, 
+                                   x = xSignLT, y = ySignLT) +
+                          annotate(geom = "text", label = grLT, color = "darkgrey", size = 5, 
+                                   x = xGrLT, y = yGrLT) +
+                          # STOC
+                          geom_line(data = dataPlot_STOC[dataPlot_STOC$group == "LT",], aes(x = year, y = estimate),
+                                             alpha = 1, linewidth = 1.1, color = "darkgreen") +
+                          annotate(geom = "text", label = signLT_STOC, color = "darkgreen", size = 5, 
+                                   x = xSignLT_STOC, y = ySignLT_STOC) +
+                          annotate(geom = "text", label = grLT_STOC, color = "darkgreen", size = 5, 
+                                   x = xGrLT_STOC, y = yGrLT_STOC) +
+                          ggtitle(sp) +
+                          scale_x_continuous(breaks = yearValues, limits = c(dataLT_sp$minYear - 1, dataLT_sp$maxYear +1)) +
+                          scale_y_continuous(breaks = seq(0.7, 1.4, by = 0.1), limits = c(0.7, 1.4)) +
+                          theme_trends(base_size = 12, color = NA) +
+                          labs(
+                            title = "Pinson des arbres",
+                            subtitle = subtitle,
+                            x = "Année",
+                            y = "Abondance relative",
+                            color = "Observatoire",
+                            fill = "Observatoire"
+                          ) + 
+                          theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+                                         legend.text = element_text(size = 14),
+                                         axis.text = element_text(size = 14),
+                                         axis.title = element_text(size = 18),
+                                         title = element_text(size = 15),
+                                         panel.grid.minor = element_blank(),
+                                         legend.position = "top",
+                                         legend.justification = "left") ; plot_pinson_ODJ_STOC 
 
 ```
