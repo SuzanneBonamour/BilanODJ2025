@@ -358,8 +358,8 @@ STOCdataLongTerm$species <- STOCdataLongTerm$french_name
 plot_ODJ_STOC <- function(sp_vec, 
                           dataLongTerm, 
                           STOCdataLongTerm, 
-                          y_limits = c(0.7, 1.4), 
-                          y_breaks = seq(0.7, 1.4, by = 0.15),
+                          y_limits = c(500, 1500), 
+                          y_breaks = seq(500, 1500, by = 250),
                           color_stoc = "#006400",
                           out_dir = "figures",
                           save_plots = TRUE) {
@@ -372,6 +372,8 @@ plot_ODJ_STOC <- function(sp_vec,
   plot_one_species <- function(sp) {
     sp <- as.character(sp)  # sécurité
     
+    yRef <- 1000
+
     # --- ODJ -------------------------------------------------------------------
     dataLT_sp <- dataLongTerm[dataLongTerm$species == sp,] %>%
       dplyr::select(-trendEBCC) %>%
@@ -384,20 +386,29 @@ plot_ODJ_STOC <- function(sp_vec,
     
     yearValues <- dataLT_sp$minYear:dataLT_sp$maxYear
     
-    estLT <- dataLT_sp$estimate * (yearValues - min(yearValues))
-    estLT <- estLT - mean(estLT)
+    abond <- 100
     
+    estLT <- dataLT_sp$estimate * (yearValues - min(yearValues))
+    # estLT <- (dataLT_sp$estimate*abond) * (yearValues - min(yearValues))
+    # estLT <- estLT - mean(estLT)
+    tt <- exp(dataLT_sp$estimate*(yearValues-min(yearValues)))*yRef
+    
+    if ((dataLT_sp$estimate <= 0)) {
+      estLT_ok <- exp(estLT) + (abond - exp(estLT[1]))} else{
+      estLT_ok <- exp(estLT) + (abond - exp(estLT[1]))}
+    
+    # val2014 <- estLT_ok[which(yearValues == 2014)]
+    # estLT_index <- estLT_ok / val2014 * 100
+
     dataPlot <- data.frame(
       year = yearValues,
-      estimate = exp(estLT),
-      estimate_exp = exp(estLT),
+      # estimate = estLT_index,
+      estimate = tt,
       infIC = NA,
       supIC = NA,
       group = "LT",
       rep = 1
     )
-    
-    yRef <- 1
     
     # --- STOC ------------------------------------------------------------------
     dataLT_sp_STOC <- STOCdataLongTerm[STOCdataLongTerm$species == sp,] %>%
@@ -411,13 +422,11 @@ plot_ODJ_STOC <- function(sp_vec,
     
     yearValues_STOC <- dataLT_sp_STOC$minYear:dataLT_sp_STOC$maxYear
     
-    estLT_STOC <- dataLT_sp_STOC$estimate * (yearValues_STOC - min(yearValues_STOC))
-    estLT_STOC <- estLT_STOC - mean(estLT_STOC)
+    pourc <- exp(dataLT_sp_STOC$estimate*(yearValues_STOC-min(yearValues_STOC)))*yRef
     
     dataPlot_STOC <- data.frame(
       year = yearValues_STOC,
-      estimate = exp(estLT_STOC),
-      estimate_exp = exp(estLT_STOC),
+      estimate = pourc,
       infIC = NA,
       supIC = NA,
       group = "LT",
