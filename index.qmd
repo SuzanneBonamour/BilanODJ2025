@@ -561,3 +561,216 @@ plot_ODJ_STOC(sp_vec, dataLongTerm, STOCdataLongTerm, out_dir = "figures")
 
 ```
 
+Echelle y différentes :
+
+```{r}
+#| echo: false
+#| warning: false
+
+plot_ODJ_STOC <- function(sp_vec, 
+                          dataLongTerm, 
+                          STOCdataLongTerm, 
+                          y_limits = c(400, 1500), 
+                          y_breaks = seq(500, 1500, by = 250),
+                          color_stoc = "#006400",
+                          out_dir = "figures",
+                          save_plots = TRUE) {
+  
+  # Créer le dossier si besoin
+  if (save_plots && !dir.exists(out_dir)) {
+    dir.create(out_dir, recursive = TRUE)
+  }
+  
+  plot_one_species <- function(sp) {
+    sp <- as.character(sp)  # sécurité
+    
+    yRef <- 1000
+
+    # --- ODJ -------------------------------------------------------------------
+    dataLT_sp <- dataLongTerm[dataLongTerm$species == sp,] %>%
+      dplyr::select(-trendEBCC) %>%
+      na.omit()
+    
+    if (nrow(dataLT_sp) == 0) {
+      message("⚠️ Pas de données ODJ pour : ", sp)
+      return(NULL)
+    }
+    
+    yearValues <- dataLT_sp$minYear:dataLT_sp$maxYear
+    
+    pourc <- exp(dataLT_sp$estimate*(yearValues-min(yearValues)))*yRef
+    pourc_inf <- exp(dataLT_sp$infIC*(yearValues-min(yearValues)))*yRef
+    pourc_sup <- exp(dataLT_sp$supIC*(yearValues-min(yearValues)))*yRef
+
+    dataPlot <- data.frame(
+      year = yearValues,
+      estimate = pourc,
+      estimate_inf = pourc_inf,
+      estimate_sup = pourc_sup,
+      infIC = NA,
+      supIC = NA,
+      group = "LT",
+      rep = 1
+    )
+    
+    # --- STOC ------------------------------------------------------------------
+    dataLT_sp_STOC <- STOCdataLongTerm[STOCdataLongTerm$species == sp,] %>%
+      dplyr::select(-trendEBCC) %>%
+      na.omit()
+    
+    if (nrow(dataLT_sp_STOC) == 0) {
+      message("⚠️ Pas de données STOC pour : ", sp)
+      return(NULL)
+    }
+    
+    yearValues_STOC <- dataLT_sp_STOC$minYear:dataLT_sp_STOC$maxYear
+    
+    pourc_STOC <- exp(dataLT_sp_STOC$estimate*(yearValues_STOC-min(yearValues_STOC)))*yRef
+    pourc_inf_STOC <- exp(dataLT_sp_STOC$infIC*(yearValues_STOC-min(yearValues_STOC)))*yRef
+    pourc_sup_STOC <- exp(dataLT_sp_STOC$supIC*(yearValues_STOC-min(yearValues_STOC)))*yRef
+    
+    dataPlot_STOC <- data.frame(
+      year = yearValues_STOC,
+      estimate = pourc_STOC,
+      estimate_inf = pourc_inf_STOC,
+      estimate_sup = pourc_sup_STOC,
+      infIC = NA,
+      supIC = NA,
+      group = "LT",
+      rep = 1
+    )
+    
+    # --- Infos pour le sous-titre ----------------------------------------------
+    perc_odj  <- as.character(dataLT_sp$perc[1])
+    inf_odj   <- as.character(dataLT_sp$infPerc[1])
+    sup_odj   <- as.character(dataLT_sp$supPerc[1])
+    
+    perc_stoc <- as.character(dataLT_sp_STOC$perc[1])
+    inf_stoc  <- as.character(dataLT_sp_STOC$infPerc[1])
+    sup_stoc  <- as.character(dataLT_sp_STOC$supPerc[1])
+    
+    subtitle <- paste0(
+      "<span style='color:black;'>ODJ : ", perc_odj,
+      "% [", inf_odj, "% ; ", sup_odj, "%]</span><br>",
+      "<span style='color:", color_stoc, ";'>STOC : ", perc_stoc,
+      "% [", inf_stoc, "% ; ", sup_stoc, "%]</span>"
+    )
+    
+    # --- significance (STOC seulement ici) -------------------------------------
+    signLT_STOC <- dataLT_sp_STOC$pval
+    xSignLT_STOC <- dataLT_sp_STOC$maxYear + 1 
+    ySignLT_STOC <- mean(dataPlot_STOC$estimate[dataPlot_STOC$year == dataLT_sp_STOC$maxYear])
+    
+    # --- Plot ------------------------------------------------------------------
+    p <- ggplot() +
+      geom_hline(yintercept = yRef, col = "gray", linetype = "dashed", linewidth = 1.01) +
+      geom_ribbon(data = dataPlot, aes(x = year, y = estimate, 
+                                       ymin = estimate_inf, ymax = estimate_sup), fill = "black", alpha = 0.1) + 
+      geom_ribbon(data = dataPlot_STOC, aes(x = year, y = estimate, 
+                                       ymin = estimate_inf, ymax = estimate_sup), fill = color_stoc, alpha = 0.1) +
+      geom_line(data = dataPlot, aes(x = year, y = estimate),
+                alpha = 1, linewidth = 1.5, color = "black") +
+      geom_line(data = dataPlot_STOC, aes(x = year, y = estimate),
+                alpha = 1, linewidth = 1.5, color = color_stoc) +
+      ggtitle(sp) +
+      scale_x_continuous(
+        breaks = yearValues,
+        limits = c(dataLT_sp$minYear[1] - 0.5, dataLT_sp$maxYear[1] + 0.5)
+      ) +
+      # scale_y_continuous(breaks = y_breaks, limits = y_limits) +
+      theme_trends(base_size = 12, color = NA) +
+      labs(
+        title = sp,
+        subtitle = subtitle,
+        x = "Année",
+        y = "Abondance relative",
+        color = "Observatoire",
+        fill = "Observatoire"
+      ) +
+      theme(
+        axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1),
+        legend.text = element_text(size = 14),
+        axis.text = element_text(size = 14),
+        axis.title = element_text(size = 18),
+        title = element_text(size = 15),
+        panel.grid.minor = element_blank(),
+        legend.position = "top",
+        legend.justification = "left",
+        plot.subtitle = ggtext::element_markdown(size = 13, lineheight = 1.1)
+      )
+    
+    # Ajouter étoile si pval < 0.05
+    if (!is.na(signLT_STOC) && signLT_STOC < 0.05) {
+      p <- p + annotate("text", label = "*", color = color_stoc, size = 6, 
+                        x = xSignLT_STOC - 0.5, y = ySignLT_STOC + 0.02)
+    }
+    
+    # --- Sauvegarde si demandé -------------------------------------------------
+# if (save_plots && !is.null(p)) {
+#   # Convertir en ASCII et nettoyer
+#   safe_name <- iconv(as.character(sp), from = "UTF-8", to = "ASCII//TRANSLIT")
+#   safe_name <- gsub("[^[:alnum:]_]", "_", safe_name)
+#   stopifnot(length(safe_name) == 1, nchar(safe_name) > 0)
+#   
+#   if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
+#   file_base <- file.path(out_dir, safe_name)
+#   
+#   # Sauvegarde PNG
+#   ggsave(paste0(file_base, ".png"), plot = p, width = 7, height = 5, dpi = 300)
+#   
+#   # Si vraiment besoin de SVG, utiliser le même safe_name
+#   ggsave(paste0(file_base, ".svg"), plot = p, width = 7, height = 5)
+# }
+
+
+# --- Sauvegarde si demandé -------------------------------------------------
+# --- Sauvegarde si demandé ---
+# if (!is.null(p)) {
+#   # Convertir le nom de l'espèce en ASCII et nettoyer
+#   safe_name <- iconv(as.character(sp), from = "UTF-8", to = "ASCII//TRANSLIT")
+#   safe_name <- gsub("[^[:alnum:]_]", "_", safe_name)
+#   
+#   # Vérifier que safe_name est valide
+#   if (length(safe_name) != 1 || nchar(safe_name) == 0 || is.na(safe_name)) {
+#     safe_name <- paste0("plot_", as.integer(Sys.time()))
+#   }
+#   
+#   # Créer le dossier si nécessaire
+#   if (!dir.exists(out_dir)) dir.create(out_dir, recursive = TRUE)
+#   
+#   file_base <- file.path(out_dir, safe_name)
+#   
+#   # Sauvegarde PNG
+#   ggsave(filename = paste0(file_base, ".png"), plot = p, width = 7, height = 5, dpi = 300)
+#   
+#   # Sauvegarde SVG
+#   ggsave(filename = paste0(file_base, ".svg"), plot = p, width = 7, height = 5)
+# }
+
+
+
+
+
+    return(p)
+  }
+  
+  # Générer et afficher chaque graphique
+  plots <- lapply(sp_vec, plot_one_species)
+  plots <- plots[!sapply(plots, is.null)]
+  
+  for (p in plots) print(p)  # affichage dans Quarto
+  
+  invisible(plots)
+}
+
+sp_vec <-c("Verdier d'Europe","Sittelle torchepot","Grosbec casse-noyaux","Rougegorge familier","Pinson des arbres")
+
+plot_ODJ_STOC(sp_vec, dataLongTerm, STOCdataLongTerm, out_dir = "figures")
+
+
+
+# plot_ODJ_STOC(sp_vec, dataLongTerm, STOCdataLongTerm, out_dir = "figures")
+
+```
+
+
